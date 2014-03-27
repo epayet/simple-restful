@@ -51,9 +51,8 @@ Here you are, then you can access and modify your resource with these operations
 
 #### Get all the resources
 
-GET `http://localhost:8080/example`
+GET `http://localhost:8080/example`. Example result:
 
-Example result:
     [{
         "name": "example1"
     }, {
@@ -62,9 +61,7 @@ Example result:
 
 #### Get one resource
 
-GET `http://localhost:8080/example/example1`.
-
-Example result:
+GET `http://localhost:8080/example/example1`. Example result:
 
     {
         "name": "example1"
