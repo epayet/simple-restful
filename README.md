@@ -47,7 +47,7 @@ And finally, you create the routes via the resourceManager and run the server
 
 Here you are, then you can access and modify your resource with these operations:
 
-### Operations you can call and what they do
+### Operations you can call
 
 #### Get all the resources
 

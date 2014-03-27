@@ -5,11 +5,15 @@ var copy = function(obj) {
         default:
             return obj;
         case "object":
-            var obj2 = {};
-            for (var attr in obj) {
-                obj2[attr] = copy(obj[attr]);
+            if(Array.isArray(obj)) {
+                return obj.slice(0);
+            } else {
+                var obj2 = {};
+                for (var attr in obj) {
+                    obj2[attr] = copy(obj[attr]);
+                }
+                return obj2;
             }
-            return obj2;
     }
 };
 
