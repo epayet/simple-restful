@@ -1,4 +1,5 @@
 var fs = require("fs");
+var xml2json = require("xml2json");
 
 var copy = function(obj) {
     switch(typeof obj) {
@@ -55,6 +56,43 @@ var strArrayContains = function(str, array) {
     return array.indexOf(str) > -1;
 };
 
+var strToJsonByContentType = function(str, contentType) {
+    var value = null;
+    switch(contentType) {
+        default:
+            switch(guessType(str)) {
+                case "json":
+                    return strToJsonByContentType(str, "application/json");
+                case "xml":
+                    return strToJsonByContentType(str, "text/xml");
+            }
+        case "application/json":
+            try{
+                value = JSON.parse(str);
+            } catch(err) {
+                value = null;
+            }
+            break;
+
+        case "text/xml":
+        case "application/xml":
+            value = xml2json.toJson(str, {object: true});
+            break;
+    }
+    return value;
+};
+
+var guessType = function(str) {
+    var firstChar = str.substr(0, 1);
+    switch(firstChar) {
+        case "[":
+        case "{":
+            return "json";
+        case "<":
+            return "xml";
+    }
+};
+
 exports.copy = copy;
 exports.mergeObjects = mergeObjects;
 exports.trimSpacesAndBreaks = trimSpacesAndBreaks;
@@ -63,3 +101,5 @@ exports.getRidOfExtension = getRidOfExtension;
 exports.strArrayContains = strArrayContains;
 exports.loadStrData = loadStrData;
 exports.stringFullTrim = stringFullTrim;
+exports.strToJsonByContentType = strToJsonByContentType;
+exports.guessType = guessType;
