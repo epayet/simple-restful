@@ -1,5 +1,6 @@
 var RestServer = require("../lib/server/RestServer");
 var restify = require("restify");
+var BaseRepository = require("../lib/repository/BaseRepository");
 
 var server, client;
 
@@ -55,17 +56,48 @@ module.exports = {
                 })
             });
         }
+    },
+
+    //TODO sub resources
+
+    customRepository : {
+        consoleRepository : function(assert) {
+            client.get("/repository/test", function(err, req, res, obj) {
+                assert.equals(obj, "test");
+                assert.done();
+            });
+        }
     }
 };
 
 function setupServer() {
     var server = new RestServer({port: 8081});
+
+    //repository
+    var EchoRepository = function(dataInfo, options) {
+        BaseRepository.call(this, dataInfo, options);
+    };
+
+    EchoRepository.prototype = Object.create(BaseRepository.prototype);
+    EchoRepository.prototype.get = function(resourceId, callback) {
+        callback(resourceId);
+    };
+    server.registerRepository("Echo", EchoRepository);
+
+    //resources
     var simpleResourceInfo = {
         name: "example",
         idField: "name",
         repository: server.getRepository("InMemory")
     };
     server.addResource(simpleResourceInfo);
+
+    var testRepositoryInfo = {
+        name: "repository",
+        idField: "name",
+        repository: server.getRepository("Echo")
+    };
+    server.addResource(testRepositoryInfo);
     server.run();
     return server;
 }

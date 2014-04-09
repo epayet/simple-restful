@@ -1,5 +1,4 @@
 var simpleRestful = require('simple-restful');
-
 var server = new simpleRestful.createServer();
 
 var simpleResourceInfo = {
