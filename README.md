@@ -44,7 +44,7 @@ Here an example to create a custom repository that override a method and log in 
 
     var simpleRestful = require('simple-restful');
     var server = simpleRestful.createServer();
-    var BaseRepository = simpleRestful.getBaseRepository();
+    var BaseRepository = simpleRestful.BaseRepository;
 
     //new repository constructor
     //simple dataInfo : {idField: "name", name: "example"}
