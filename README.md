@@ -89,7 +89,9 @@ With this strategy, the data are stored in memory and vanish when the server sto
 
 #### FileRepository (File)
 
-With this strategy, the data are stored in json files. The default folder is data.
+With this strategy, the data are stored in json files. The default folder is data. Options:
+
+* folderPath: the folder path for the data
 
 #### MongoDBRepository (MongoDB)
 
