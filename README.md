@@ -1,4 +1,4 @@
-# SimpleRestJS
+# SimpleRestfulJS
 
 This application let you build a simple RESTful server with [NodeJS](http://nodejs.org/).
 

@@ -1,6 +1,6 @@
-var simpleRest = require('simple-rest');
+var simpleRestful = require('simple-restful');
 
-var server = new simpleRest.createServer();
+var server = new simpleRestful.createServer();
 
 var simpleResourceInfo = {
     name: "example",
