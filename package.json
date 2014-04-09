@@ -1,0 +1,24 @@
+{
+    "author": "Emmanuel Payet",
+    "name": "simple-rest",
+    "description": "Easily create RESTful API",
+    "version": "0.1.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/epayet/SimpleRestJS.git"
+    },
+    "main": "./lib/simple-rest",
+    "keywords": [
+        "rest",
+        "server",
+        "restful",
+        "simple",
+        "api"
+    ],
+    "dependencies": {
+        "restify" : "*"
+    },
+    "engines": {
+        "node": "*"
+    }
+}
