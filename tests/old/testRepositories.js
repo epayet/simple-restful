@@ -1,4 +1,4 @@
-var TestRepository = require("../lib/repository/TestRepository");
+var TestRepository = require("../../lib/repository/TestRepository");
 
 var repositoryInfo = {
     repositoryType:"InMemoryRepository"

@@ -1,26 +1,29 @@
 {
-    "author": "Emmanuel Payet",
-    "name": "simple-restful",
-    "description": "Easily create RESTful API",
-    "version": "0.1.6",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/epayet/SimpleRestJS.git"
-    },
-    "main": "./lib/simple-restful",
-    "keywords": [
-        "rest",
-        "server",
-        "restful",
-        "simple",
-        "api"
-    ],
-    "dependencies": {
-        "restify": "*",
-        "mongodb": "*",
-        "async": "*"
-    },
-    "engines": {
-        "node": "*"
-    }
+  "author": "Emmanuel Payet",
+  "name": "simple-restful",
+  "description": "Easily create RESTful API",
+  "version": "0.1.6",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/epayet/SimpleRestJS.git"
+  },
+  "main": "./lib/simple-restful",
+  "keywords": [
+    "rest",
+    "server",
+    "restful",
+    "simple",
+    "api"
+  ],
+  "dependencies": {
+    "restify": "*",
+    "mongodb": "*",
+    "async": "*"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "devDependencies": {
+    "request": "~2.36.0"
+  }
 }

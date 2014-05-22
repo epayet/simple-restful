@@ -1,6 +1,6 @@
-var RestServer = require("../lib/server/RestServer");
+var RestServer = require("../../lib/server/RestServer");
 var restify = require("restify");
-var BaseRepository = require("../lib/repository/BaseRepository");
+var BaseRepository = require("../../lib/repository/BaseRepository");
 
 var server, client;
 
