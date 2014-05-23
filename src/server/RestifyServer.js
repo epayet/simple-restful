@@ -22,4 +22,8 @@ Server.prototype.close = function() {
     this.isRunning = false;
 };
 
+Server.prototype.get = function(uri, callback) {
+    this.server.get(uri, callback);
+};
+
 module.exports = Server;

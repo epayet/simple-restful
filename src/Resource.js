@@ -4,4 +4,8 @@ var Resource = function (infos) {
     this.repository = new infos.repositoryClass(infos.repositoryOptions);
 };
 
+Resource.prototype.getUri = function() {
+    return "/" + this.name;
+};
+
 module.exports = Resource;

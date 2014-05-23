@@ -47,7 +47,12 @@ RestfulServer.prototype.createRoutes = function() {
 };
 
 RestfulServer.prototype.createRoutesForResource = function(resource) {
-    //TODO use complex object
+    this.server.addRoute({
+        verb: "GET",
+        uri: resource.getUri(),
+        callback: resource.repository.getAll,
+        debug: this.debug
+    });
     /*this.server.addRoute("GET", resource.getUri(), resource.repository.get);
     this.server.addRoute("GET", resource.getUriWithIdField(), resource.repository.getAll);
     this.server.addRoute("POST", resource.getUri(), resource.repository.add);

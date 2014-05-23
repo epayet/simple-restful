@@ -18,7 +18,8 @@
   "dependencies": {
     "restify": "*",
     "mongodb": "*",
-    "async": "*"
+    "async": "*",
+    "underscore": "~1.6.0"
   },
   "engines": {
     "node": "*"

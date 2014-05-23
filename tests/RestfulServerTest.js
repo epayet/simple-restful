@@ -19,6 +19,7 @@ module.exports = {
 
     tearDown: function(callback) {
         server.close();
+        client.close();
         callback();
     },
 
@@ -46,13 +47,25 @@ module.exports = {
         },
 
         simpleRoutes: {
-            getAll: function (assert) {
+            getAll_Empty: function (assert) {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
                 client.get("/example", function (err, req, res, obj) {
                     assert.same(obj, []);
                     assert.done();
+                });
+            },
+
+            addResource_getAll_One: function (assert) {
+                server.addResource(simpleResourceInfo);
+                server.run();
+
+                client.post("/example", {"name": "test"}, function () {
+                    client.get("/example", function (err, req, res, obj) {
+                        assert.equal(obj.length, 1);
+                        assert.done();
+                    });
                 });
             }
         }
