@@ -1,3 +1,5 @@
+var async = require("async");
+
 exports.testRepository = function(Repository, repositoryInfo) {
     var simpleDataInfo = {
         idField: "id",
@@ -126,7 +128,6 @@ exports.testRepository = function(Repository, repositoryInfo) {
                 }, additionalIdentifiers);
             },
 
-            //TODO These tests are a bit long
             removeSubResource_ParentExists : function(test) {
                 var parentId = 1;
                 var additionalIdentifiers = {
@@ -205,28 +206,33 @@ exports.testRepository = function(Repository, repositoryInfo) {
         }
     };
 
-    function injectSimpleData(repository, nbData, callback, additionalIdentifiers, simpleData) {
-        var simple = {
-            id: nbData,
-            randomField : "data" + nbData
-        };
-        repository.add(simple, function(simple) {
-            nbData--;
-
-            if(nbData == 0 && simpleData == null)
-                callback(simple);
-            else {
-                if(simpleData == null)
-                    simpleData = [];
-                simpleData.push(simple);
-
-                if(nbData == 0) {
-                    simpleData.reverse();
-                    callback(simpleData);
-                }
-                else
-                    injectSimpleData(repository, nbData, callback, additionalIdentifiers, simpleData);
+    function injectSimpleData(repository, nbData, callback, additionalIdentifiers) {
+        //if a lot of data to inject, callback an array
+        if(nbData > 1) {
+            var createCallbacks = [];
+            for (var i = 1; i <= nbData; i++) {
+                createCallbacks.push(createAddCallback(i));
             }
-        }, additionalIdentifiers);
+            async.parallel(createCallbacks, function (err, results) {
+                callback(results);
+            });
+        } //else callback only one object and call it now
+        else {
+            createAddCallback(1)(function (err, result) {
+                callback(result);
+            });
+        }
+
+        function createAddCallback(nbData) {
+            var simple = {
+                id: nbData,
+                randomField : "data" + nbData
+            };
+            return function(callback) {
+                repository.add(simple, function(simple) {
+                    callback(null, simple);
+                }, additionalIdentifiers);
+            }
+        }
     }
 };

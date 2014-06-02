@@ -1,3 +1,5 @@
+var async = require("async");
+
 var Repository = function(dataInfo, repositoryInfo) {
     this.idField = dataInfo.idField;
     this.dataName = dataInfo.name;
@@ -39,35 +41,23 @@ Repository.prototype.parentDeleted = function(parentId) {
 
 };
 
-//TODO maybe refacto here ? Use something like async
-Repository.prototype.getMultiple = function(resourceIds, callback, additionalIdentifiers, index) {
-    if(!resourceIds)
-        callback(null);
-    else if(resourceIds.length == 0)
-        callback([]);
-    else {
-        var maxIndex = resourceIds.length - 1;
-        if(index == null)
-            index = maxIndex;
-
-        var self = this;
-        if(index != 0) {
-            this.getMultiple(resourceIds, function(resources) {
-                getActualAndPushToResourcesThenCallback(resources);
-            }, additionalIdentifiers, index - 1);
-        } else {
-            getActualAndPushToResourcesThenCallback();
-        }
+Repository.prototype.getMultiple = function(resourceIds, callback, additionalIdentifiers) {
+    var self = this;
+    var getCallbacks = [];
+    for(var i=0; i<resourceIds.length; i++) {
+        getCallbacks.push(createGetCallback(resourceIds[i]));
     }
 
-    function getActualAndPushToResourcesThenCallback(resources) {
-        if(!resources)
-            resources = [];
+    async.parallel(getCallbacks, function (err, results) {
+        callback(results);
+    });
 
-        self.get(resourceIds[index], function(resource) {
-            resources.push(resource);
-            callback(resources);
-        }, additionalIdentifiers);
+    function createGetCallback(id) {
+        return function (callback) {
+            self.get(id, function (resource) {
+                callback(null, resource);
+            }, additionalIdentifiers);
+        };
     }
 };
 

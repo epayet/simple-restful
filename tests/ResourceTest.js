@@ -8,6 +8,12 @@ module.exports = {
         var resource = new Resource(simpleResourceInfo);
         assert.equals(resource.getUri(), "/example");
         assert.done();
+    },
+
+    getUriWithIdField: function(assert) {
+        var resource = new Resource(simpleResourceInfo);
+        assert.equals(resource.getUriWithIdField(), "/example/:name");
+        assert.done();
     }
 };
 

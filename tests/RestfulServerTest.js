@@ -61,13 +61,63 @@ module.exports = {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
-                client.post("/example", {"name": "test"}, function () {
+                var objInserted = {"name": "test"};
+                client.post("/example", objInserted, function () {
                     client.get("/example", function (err, req, res, obj) {
                         assert.equal(obj.length, 1);
+                        assert.same(obj[0], objInserted);
                         assert.done();
                     });
                 });
+            },
+
+            addResource_getOne: function(assert) {
+                server.addResource(simpleResourceInfo);
+                server.run();
+
+                var objInserted = {"name": "test"};
+                client.post("/example", objInserted, function () {
+                    client.get("/example/test", function (err, req, res, obj) {
+                        assert.same(obj, objInserted);
+                        assert.done();
+                    });
+                });
+            },
+
+            updateResource_resourceChanged: function(assert) {
+                server.addResource(simpleResourceInfo);
+                server.run();
+
+                var objInserted = {"name": "test"};
+                client.post("/example", objInserted, function () {
+                    var objChanged = {"name": "test", someStuff: "stuff"};
+                    client.put("/example/test", objChanged, function () {
+                        client.get("/example/test", function (err, req, res, obj) {
+                            assert.same(obj, objChanged);
+                            assert.done();
+                        });
+                    });
+                });
+            },
+
+            deleteAfterAdded: function(assert) {
+                server.addResource(simpleResourceInfo);
+                server.run();
+
+                client.post("/example", {name: "test"}, function () {
+                    client.del("/example/test", function () {
+                        client.get("/example", function (err, req, res, obj) {
+                            assert.equals(obj.length, 0);
+                            assert.done();
+                        });
+                    });
+                });
             }
+        },
+
+        //TODO
+        subResource: {
+
         }
     }
 };

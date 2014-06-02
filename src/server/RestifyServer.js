@@ -26,4 +26,20 @@ Server.prototype.get = function(uri, callback) {
     this.server.get(uri, callback);
 };
 
+Server.prototype.post = function(uri, callback) {
+    this.server.post(uri, callback);
+};
+
+Server.prototype.put = function(uri, callback) {
+    this.server.put(uri, callback);
+};
+
+Server.prototype.del = function(uri, callback) {
+    this.server.del(uri, callback);
+};
+
+Server.prototype.mapJsonBody = function() {
+    this.server.use(restify.bodyParser({ mapParams: false }));
+};
+
 module.exports = Server;
