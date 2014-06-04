@@ -3,12 +3,11 @@ var _ = require("underscore");
 var Resource = function (infos) {
     this.name = infos.name;
     this.idField = infos.idField;
-    var repositoryOptions = {
+    var dataInfo = {
         idField: infos.idField,
         dataName: infos.name
     };
-    _.extend(repositoryOptions, infos.repositoryOptions);
-    this.repository = new infos.repositoryClass(repositoryOptions);
+    this.repository = new infos.repositoryClass(dataInfo, infos.repositoryOptions);
 };
 
 Resource.prototype.getUri = function() {
