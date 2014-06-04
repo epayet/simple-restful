@@ -5,7 +5,7 @@ var Resource = function (infos) {
     this.idField = infos.idField;
     var dataInfo = {
         idField: infos.idField,
-        dataName: infos.name
+        name: infos.name
     };
     this.repository = new infos.repositoryClass(dataInfo, infos.repositoryOptions);
 };

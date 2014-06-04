@@ -1,10 +1,10 @@
 var simpleRestful = require('simple-restful');
-var server = new simpleRestful.createServer();
+var server = new simpleRestful.createServer({port: 8081, debug: true});
 
 var simpleResourceInfo = {
     name: "example",
     idField: "name",
-    repository: server.getRepository("InMemory")
+    repository: "InMemory"
 };
 server.addResource(simpleResourceInfo);
 server.run();
