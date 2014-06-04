@@ -7,6 +7,7 @@ var server, client;
 
 var simpleResourceInfo = getTestData("simpleResource");
 var resourceWithSubs = getTestData("resourceWithSubs");
+var resourceNoIdField = getTestData("resourceNoIdField");
 
 module.exports = {
     setUp: function(callback) {
@@ -66,6 +67,17 @@ module.exports = {
                 assert.done();
             }
         }
+
+//        noIdField: function(assert) {
+            //TODO noIdField: means no add method, only update and {} by default
+//            server.addResource(resourceNoIdField);
+//
+//            assert.equals(server.routes.length, 2);
+//            var routeAdd = server.routes[1];
+//            assert.equals(routeAdd.uri, "/example");
+//            assert.equals(routeAdd.verb, "PUT");
+//            assert.done();
+//        }
     },
 
     runServer: {
@@ -146,18 +158,59 @@ module.exports = {
                         assert.done();
                     });
                 });
+            },
+
+            addResource_getAll_One: function (assert) {
+                prepareServerForSubResources(function () {
+                    client.post("/parent/1/sub", {"subId": "test"}, function () {
+                        client.get("/parent/1/sub", function (err, req, res, obj) {
+                            assert.equal(obj.length, 1);
+                            //id parent appeared
+                            assert.same(obj[0], {"subId": "test", id:1});
+                            assert.done();
+                        });
+                    });
+                });
+            },
+
+            deleteParent_noSubs: function(assert) {
+                prepareServerForSubResources(function () {
+                    //Add one sub
+                    client.post("/parent/1/sub", {subId: 1}, function (err) {
+                        //Check there is 1 sub
+                        client.get("/parent/1/sub", function (err, req, res, obj) {
+                            assert.equals(obj.length, 1);
+                            //Delete parent
+                            client.del("/parent/1", function () {
+                                //Check no sub exists anymore
+                                client.get("/parent/1/sub", function (err, req, res, obj) {
+                                    assert.equals(obj.length, 0);
+                                    assert.done();
+                                });
+                            });
+                        });
+                    });
+                });
             }
         }
+
+        //TODO noIdField: means no add method, only update and {} by default
+//        noIdField: {
+////            t: function(assert) {
+////                server.addResource(noIdFieldResource);
+////                server.run();
+////
+////
+////            }
+//        }
     }
 };
 
 function prepareServerForSubResources(callback) {
     server.addResource(resourceWithSubs);
     server.run();
-    addParentData(1, function () {
-        addParentData(2, function () {
-            callback();
-        });
+    client.post("/parent", {id: 1}, function () {
+        callback();
     });
 }
 
@@ -188,5 +241,10 @@ function getTestData(data) {
                     }
                 ]
             };
+        case "resourceNoIdField":
+            return {
+                name: "example",
+                repository: "InMemory"
+            }
     }
 }

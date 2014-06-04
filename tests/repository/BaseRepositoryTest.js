@@ -181,6 +181,7 @@ exports.testRepository = function(Repository, repositoryInfo) {
         },
 
         //TODO does not work with File
+        //TODO noIdField: means no add method, only update and {} by default
         groupNoIdField: {
             addOne_getReturnsOneObject: function (assert) {
                 injectSimpleData(noIdFieldRepository, 1, function(simple) {

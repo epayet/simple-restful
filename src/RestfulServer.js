@@ -61,49 +61,70 @@ RestfulServer.prototype.createRoutes = function() {
 };
 
 RestfulServer.prototype.registerRoutes = function(resource) {
-    this.routes.push({
-        verb: "GET",
-        uri: resource.getUri(),
-        repository: resource.repository,
-        repositoryMethod: "getAll",
-        debug: this.debug
-    });
+    if(resource.idField) {
+        this.routes.push({
+            verb: "GET",
+            uri: resource.getUri(),
+            repository: resource.repository,
+            repositoryMethod: "getAll",
+            debug: this.debug
+        });
 
-    this.routes.push({
-        verb: "GET",
-        uri: resource.getUriWithIdField(),
-        repository: resource.repository,
-        repositoryMethod: "get",
-        parameterType: "id",
-        debug: this.debug
-    });
+        this.routes.push({
+            verb: "GET",
+            uri: resource.getUriWithIdField(),
+            repository: resource.repository,
+            repositoryMethod: "get",
+            parameterType: "id",
+            debug: this.debug
+        });
 
-    this.routes.push({
-        verb: "POST",
-        uri: resource.getUri(),
-        repository: resource.repository,
-        repositoryMethod: "add",
-        parameterType: "body",
-        debug: this.debug
-    });
+        this.routes.push({
+            verb: "POST",
+            uri: resource.getUri(),
+            repository: resource.repository,
+            repositoryMethod: "add",
+            parameterType: "body",
+            debug: this.debug
+        });
 
-    this.routes.push({
-        verb: "PUT",
-        uri: resource.getUriWithIdField(),
-        repository: resource.repository,
-        repositoryMethod: "update",
-        parameterType: "body",
-        debug: this.debug
-    });
+        this.routes.push({
+            verb: "PUT",
+            uri: resource.getUriWithIdField(),
+            repository: resource.repository,
+            repositoryMethod: "update",
+            parameterType: "body",
+            debug: this.debug
+        });
 
-    this.routes.push({
-        verb: "DELETE",
-        uri: resource.getUriWithIdField(),
-        repository: resource.repository,
-        repositoryMethod: "remove",
-        parameterType: "id",
-        debug: this.debug
-    });
+        this.routes.push({
+            verb: "DELETE",
+            uri: resource.getUriWithIdField(),
+            repository: resource.repository,
+            repositoryMethod: "remove",
+            parameterType: "id",
+            debug: this.debug
+        });
+    } else {
+        //TODO noIdField: means no add method, only update and {} by default
+//        this.routes.push({
+//            verb: "GET",
+//            uri: resource.getUri(),
+//            repository: resource.repository,
+//            repositoryMethod: "get",
+//            parameterType: "id",
+//            debug: this.debug
+//        });
+//
+//        this.routes.push({
+//            verb: "PUT",
+//            uri: resource.getUri(),
+//            repository: resource.repository,
+//            repositoryMethod: "add",
+//            parameterType: "body",
+//            debug: this.debug
+//        });
+    }
 };
 
 RestfulServer.prototype.createRoute = function(infos) {
