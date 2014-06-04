@@ -6,6 +6,7 @@ var InMemoryRepository = require("../src/repository/InMemoryRepository");
 var server, client;
 
 var simpleResourceInfo = getTestData("simpleResource");
+var resourceWithSubs = getTestData("resourceWithSubs");
 
 module.exports = {
     setUp: function(callback) {
@@ -24,28 +25,50 @@ module.exports = {
     },
 
     resource: {
-        addSimpleResource_ServerNotRunning: function(assert) {
-            server.addResource(simpleResourceInfo);
+        simple: {
+            addSimpleResource_ServerNotRunning: function (assert) {
+                server.addResource(simpleResourceInfo);
 
-            assert.equals(server.resources.length, 1);
-            assert.same(server.resources[0].name, simpleResourceInfo.name);
-            assert.same(server.resources[0].idField, simpleResourceInfo.idField);
-            assert.ok(server.resources[0].repository instanceof InMemoryRepository);
-            assert.equals(server.server.isRunning, false);
-            assert.done();
-        },
-
-        run_ServerRunning: function(assert) {
-            server.run();
-
-            request.get("http://localhost:8081", function (err, res, body) {
-                assert.notEqual(res, undefined);
-                assert.equal(err, undefined);
-                assert.equals(server.server.isRunning, true);
+                assert.equals(server.resources.length, 1);
+                assert.same(server.resources[0].name, simpleResourceInfo.name);
+                assert.same(server.resources[0].idField, simpleResourceInfo.idField);
+                assert.ok(server.resources[0].repository instanceof InMemoryRepository);
+                assert.equals(server.server.isRunning, false);
                 assert.done();
-            });
+            },
+
+            addResource_5RoutesRegistred: function(assert) {
+                server.addResource(simpleResourceInfo);
+
+                assert.equals(server.routes.length, 5);
+                var getAllRoute = server.routes[0];
+                assert.equals(getAllRoute.verb, "GET");
+                assert.equals(getAllRoute.uri, "/example");
+                assert.equals(getAllRoute.repositoryMethod, "getAll");
+                assert.done();
+            }
         },
 
+        subResources: {
+            addResourceWithSubs_2resourcesRegistred: function(assert) {
+                server.addResource(resourceWithSubs);
+
+                assert.equals(server.resources.length, 2);
+                assert.done();
+            },
+
+            addResource_10RoutesRegistred: function(assert) {
+                server.addResource(resourceWithSubs);
+
+                assert.equals(server.routes.length, 10);
+                var routeGetSub = server.routes[6];
+                assert.equals(routeGetSub.uri, "/parent/:id/sub/:subId");
+                assert.done();
+            }
+        }
+    },
+
+    runServer: {
         simpleRoutes: {
             getAll_Empty: function (assert) {
                 server.addResource(simpleResourceInfo);
@@ -71,7 +94,7 @@ module.exports = {
                 });
             },
 
-            addResource_getOne: function(assert) {
+            addResource_getOne: function (assert) {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
@@ -84,7 +107,7 @@ module.exports = {
                 });
             },
 
-            updateResource_resourceChanged: function(assert) {
+            updateResource_resourceChanged: function (assert) {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
@@ -100,7 +123,7 @@ module.exports = {
                 });
             },
 
-            deleteAfterAdded: function(assert) {
+            deleteAfterAdded: function (assert) {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
@@ -115,12 +138,34 @@ module.exports = {
             }
         },
 
-        //TODO
         subResource: {
-
+            getAll_Empty: function (assert) {
+                prepareServerForSubResources(function () {
+                    client.get("/parent/1/sub", function (err, req, res, obj) {
+                        assert.same(obj, []);
+                        assert.done();
+                    });
+                });
+            }
         }
     }
 };
+
+function prepareServerForSubResources(callback) {
+    server.addResource(resourceWithSubs);
+    server.run();
+    addParentData(1, function () {
+        addParentData(2, function () {
+            callback();
+        });
+    });
+}
+
+function addParentData(id, callback) {
+    client.post("/parent", {id: id}, function () {
+        callback();
+    });
+}
 
 function getTestData(data) {
     switch(data) {
@@ -129,6 +174,19 @@ function getTestData(data) {
                 name: "example",
                 idField: "name",
                 repository: "InMemory"
+            };
+        case "resourceWithSubs":
+            return {
+                name: "parent",
+                idField: "id",
+                repository: "InMemory",
+                subResources: [
+                    {
+                        name: "sub",
+                        idField: "subId",
+                        repository: "InMemory"
+                    }
+                ]
             };
     }
 }

@@ -2,6 +2,7 @@ var BaseRepository = require('./BaseRepository');
 var repositoryUtil = require("./repositoryUtil");
 var _ = require("underscore");
 
+//TODO: should use underscore for search into arrays
 var Repository = function(dataInfo, repositoryInfo) {
     BaseRepository.call(this, dataInfo, repositoryInfo);
     if(repositoryInfo && repositoryInfo.defaultData)

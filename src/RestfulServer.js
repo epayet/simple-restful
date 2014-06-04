@@ -1,10 +1,12 @@
 var serverFactory = require("./server/serverFactory");
-var Resource = require("./Resource");
+var Resource = require("./resource/Resource");
+var ResourceWithParent = require("./resource/ResourceWithParent");
 var _ = require("underscore");
 
 var RestfulServer = function (options) {
     this.resources = [];
     this.repositoryClasses = {};
+    this.routes = [];
     if(options) {
         this.port = options.port ? options.port : 8080;
         this.debug = options.debug ? options.debug : true;
@@ -12,9 +14,20 @@ var RestfulServer = function (options) {
     }
 };
 
-RestfulServer.prototype.addResource = function(resourceInfo) {
+RestfulServer.prototype.addResource = function(resourceInfo, parent) {
     resourceInfo.repositoryClass = this.repositoryClasses[resourceInfo.repository];
-    this.resources.push(new Resource(resourceInfo));
+    var resource;
+    if(parent)
+        resource = new ResourceWithParent(resourceInfo, parent);
+    else
+        resource = new Resource(resourceInfo);
+    this.resources.push(resource);
+    this.registerRoutes(resource);
+    if(resourceInfo.subResources) {
+        for (var i = 0; i < resourceInfo.subResources.length; i++) {
+            this.addResource(resourceInfo.subResources[i], resource);
+        }
+    }
 };
 
 RestfulServer.prototype.registerRepository = function(repositoryName, repository) {
@@ -42,13 +55,13 @@ RestfulServer.prototype.run = function() {
 };
 
 RestfulServer.prototype.createRoutes = function() {
-    for(var i=0; i<this.resources.length; i++) {
-        this.createRoutesForResource(this.resources[i]);
+    for(var i=0; i<this.routes.length; i++) {
+        this.createRoute(this.routes[i]);
     }
 };
 
-RestfulServer.prototype.createRoutesForResource = function(resource) {
-    this.createRoute({
+RestfulServer.prototype.registerRoutes = function(resource) {
+    this.routes.push({
         verb: "GET",
         uri: resource.getUri(),
         repository: resource.repository,
@@ -56,7 +69,7 @@ RestfulServer.prototype.createRoutesForResource = function(resource) {
         debug: this.debug
     });
 
-    this.createRoute({
+    this.routes.push({
         verb: "GET",
         uri: resource.getUriWithIdField(),
         repository: resource.repository,
@@ -65,7 +78,7 @@ RestfulServer.prototype.createRoutesForResource = function(resource) {
         debug: this.debug
     });
 
-    this.createRoute({
+    this.routes.push({
         verb: "POST",
         uri: resource.getUri(),
         repository: resource.repository,
@@ -74,7 +87,7 @@ RestfulServer.prototype.createRoutesForResource = function(resource) {
         debug: this.debug
     });
 
-    this.createRoute({
+    this.routes.push({
         verb: "PUT",
         uri: resource.getUriWithIdField(),
         repository: resource.repository,
@@ -83,7 +96,7 @@ RestfulServer.prototype.createRoutesForResource = function(resource) {
         debug: this.debug
     });
 
-    this.createRoute({
+    this.routes.push({
         verb: "DELETE",
         uri: resource.getUriWithIdField(),
         repository: resource.repository,
@@ -91,11 +104,6 @@ RestfulServer.prototype.createRoutesForResource = function(resource) {
         parameterType: "id",
         debug: this.debug
     });
-
-//    this.server.addRoute("GET", resource.getUri(), resource.repository.get);
-//    this.server.addRoute("POST", resource.getUri(), resource.repository.add);
-//    this.server.addRoute("PUT", resource.getUriWithIdField(), resource.repository.update);
-//    this.server.addRoute("DELETE", resource.getUriWithIdField(), resource.repository.delete);
 };
 
 RestfulServer.prototype.createRoute = function(infos) {
