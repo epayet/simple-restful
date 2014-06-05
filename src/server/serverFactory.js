@@ -4,5 +4,6 @@ var RestifyServer = require("./RestifyServer");
 exports.create = function() {
     var server = new RestifyServer();
     server.mapJsonBody();
+    server.acceptXHR();
     return server;
 };
