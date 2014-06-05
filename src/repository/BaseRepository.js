@@ -1,8 +1,10 @@
 var async = require("async");
 
 var Repository = function(dataInfo, repositoryInfo) {
-    this.idField = dataInfo.idField;
-    this.dataName = dataInfo.name;
+    if(dataInfo) {
+        this.idField = dataInfo.idField;
+        this.dataName = dataInfo.name;
+    }
     this.subRepositories = [];
     this.linkedRepositories = {};
 };
