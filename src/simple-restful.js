@@ -3,6 +3,7 @@ var InMemoryRepository = require("./repository/InMemoryRepository");
 var FileRepository = require("./repository/FileRepository");
 var MongoDBRepository = require("./repository/MongoDBRepository");
 var RestfulServer = require("./RestfulServer");
+var repositoryUtil = require("./repository/repositoryUtil");
 
 var defaultRepositories = {
     "InMemory": InMemoryRepository,
@@ -23,3 +24,4 @@ function getDefaultRepository(name) {
 exports.createServer = createServer;
 exports.BaseRepository = BaseRepository;
 exports.getDefaultRepository = getDefaultRepository;
+exports.repositoryUtil = repositoryUtil;
