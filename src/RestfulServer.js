@@ -50,6 +50,10 @@ RestfulServer.prototype.run = function() {
     this.server.listen(this.port, function() {
         if(self.debug) {
             console.log('server listening at %s', self.server.url);
+            console.log('Routes available');
+            for(var i=0; i<self.routes.length; i++) {
+                console.log(self.routes[i].verb + " " + self.routes[i].uri);
+            }
         }
     });
 };
@@ -107,23 +111,23 @@ RestfulServer.prototype.registerRoutes = function(resource) {
         });
     } else {
         //TODO noIdField: means no add method, only update and {} by default
-//        this.routes.push({
-//            verb: "GET",
-//            uri: resource.getUri(),
-//            repository: resource.repository,
-//            repositoryMethod: "get",
-//            parameterType: "id",
-//            debug: this.debug
-//        });
-//
-//        this.routes.push({
-//            verb: "PUT",
-//            uri: resource.getUri(),
-//            repository: resource.repository,
-//            repositoryMethod: "add",
-//            parameterType: "body",
-//            debug: this.debug
-//        });
+        this.routes.push({
+            verb: "GET",
+            uri: resource.getUri(),
+            repository: resource.repository,
+            repositoryMethod: "get",
+            parameterType: "id",
+            debug: this.debug
+        });
+
+        this.routes.push({
+            verb: "POST",
+            uri: resource.getUri(),
+            repository: resource.repository,
+            repositoryMethod: "add",
+            parameterType: "body",
+            debug: this.debug
+        });
     }
 };
 

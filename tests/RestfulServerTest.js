@@ -66,18 +66,17 @@ module.exports = {
                 assert.equals(routeGetSub.uri, "/parent/:id/sub/:subId");
                 assert.done();
             }
-        }
+        },
 
-//        noIdField: function(assert) {
-            //TODO noIdField: means no add method, only update and {} by default
-//            server.addResource(resourceNoIdField);
-//
-//            assert.equals(server.routes.length, 2);
-//            var routeAdd = server.routes[1];
-//            assert.equals(routeAdd.uri, "/example");
-//            assert.equals(routeAdd.verb, "PUT");
-//            assert.done();
-//        }
+        noIdField: function(assert) {
+            server.addResource(resourceNoIdField);
+
+            assert.equals(server.routes.length, 2);
+            var routeAdd = server.routes[1];
+            assert.equals(routeAdd.uri, "/example");
+            assert.equals(routeAdd.verb, "POST");
+            assert.done();
+        }
     },
 
     runServer: {
