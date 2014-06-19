@@ -42,4 +42,8 @@ Server.prototype.mapJsonBody = function() {
     this.server.use(restify.bodyParser({ mapParams: false }));
 };
 
+Server.prototype.queryParser = function() {
+    this.server.use(restify.queryParser());
+};
+
 module.exports = Server;

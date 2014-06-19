@@ -115,8 +115,7 @@ RestfulServer.prototype.registerRoutes = function(resource) {
             verb: "GET",
             uri: resource.getUri(),
             repository: resource.repository,
-            repositoryMethod: "get",
-            parameterType: "id",
+            repositoryMethod: "getAll",
             debug: this.debug
         });
 

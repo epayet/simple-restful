@@ -30,6 +30,10 @@ Server.prototype.mapJsonBody = function() {
 
 };
 
+Server.prototype.queryParser = function() {
+
+};
+
 Server.prototype.acceptXHR = function () {
     this.server.use(
         function crossOrigin(req, res, next) {

@@ -5,5 +5,6 @@ exports.create = function() {
     var server = new RestifyServer();
     server.mapJsonBody();
     server.acceptXHR();
+    server.queryParser();
     return server;
 };
