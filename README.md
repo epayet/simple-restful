@@ -101,3 +101,5 @@ You can apply the sames operations to them, but the url would be `http://localho
 ### TODO
 
 * example for sub resources
+* example for linked resources
+* methods of repositoryUtil

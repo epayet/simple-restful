@@ -1,4 +1,4 @@
-var TestRepository = require("./BaseRepositoryTest");
+var TestRepository = require("./../../testUtil/BaseRepositoryTest");
 var MongoDBRepository = require("../../src/repository/MongoDBRepository");
 
 module.exports = TestRepository.testRepository(MongoDBRepository, {

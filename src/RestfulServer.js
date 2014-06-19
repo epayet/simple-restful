@@ -9,7 +9,7 @@ var RestfulServer = function (options) {
     this.routes = [];
     if(options) {
         this.port = options.port ? options.port : 8080;
-        this.debug = options.debug ? options.debug : true;
+        this.debug = options.debug !== undefined ? options.debug : true;
         this.server = serverFactory.create();
     }
 };
@@ -45,6 +45,7 @@ RestfulServer.prototype.close = function() {
 };
 
 RestfulServer.prototype.run = function() {
+//    this.setLinkedResources();
     this.createRoutes();
     var self = this;
     this.server.listen(this.port, function() {
@@ -55,6 +56,23 @@ RestfulServer.prototype.run = function() {
                 console.log(self.routes[i].verb + " " + self.routes[i].uri);
             }
         }
+    });
+};
+
+RestfulServer.prototype.setLinkedResources = function() {
+    for(var i=0; i<this.resources.length; i++) {
+        if(this.resources[i].linkedResourcesNames) {
+            for (var j = 0; j < this.resources[i].linkedResourcesNames.length; j++) {
+                var resource = this.getResource(this.resources[i].linkedResourcesNames[j]);
+                this.resources[i].addLinkedResource(resource);
+            }
+        }
+    }
+};
+
+RestfulServer.prototype.getResource = function(name) {
+    return _.find(this.resources, function (resource) {
+        return resource.name == name
     });
 };
 

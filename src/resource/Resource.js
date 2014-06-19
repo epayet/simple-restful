@@ -8,6 +8,8 @@ var Resource = function (infos) {
         name: infos.name
     };
     this.repository = new infos.repositoryClass(dataInfo, infos.repositoryOptions);
+    this.linkedResourcesNames = infos.linkedResourcesNames;
+    this.linkedResources = {};
 };
 
 Resource.prototype.getUri = function() {
@@ -16,6 +18,14 @@ Resource.prototype.getUri = function() {
 
 Resource.prototype.getUriWithIdField = function() {
     return this.getUri() + "/:" + this.idField;
+};
+
+Resource.prototype.addLinkedResource = function(linkedResource) {
+    this.linkedResources[linkedResource.name] = linkedResource;
+};
+
+Resource.prototype.getLinkedResource = function(name) {
+    return this.linkedResources[name];
 };
 
 module.exports = Resource;

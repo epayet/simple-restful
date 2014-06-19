@@ -8,10 +8,11 @@ var server, client;
 var simpleResourceInfo = getTestData("simpleResource");
 var resourceWithSubs = getTestData("resourceWithSubs");
 var resourceNoIdField = getTestData("resourceNoIdField");
+var resourceWithLinkedResource = getTestData("resourceWithLinked");
 
 module.exports = {
     setUp: function(callback) {
-        server = new RestfulServer({port: 8081});
+        server = new RestfulServer({port: 8081, debug:false});
         server.registerRepositories({
             "InMemory": InMemoryRepository
         });
@@ -77,6 +78,22 @@ module.exports = {
             assert.equals(routeAdd.verb, "POST");
             assert.done();
         }
+    },
+
+    linkedResources: function(assert) {
+        server.addResource(simpleResourceInfo);
+        server.addResource(resourceWithLinkedResource);
+        server.setLinkedResources();
+        var resourceWithLinked = server.resources[1];
+        assert.ok(resourceWithLinked.linkedResources["example"] != null, "shoud have linked resources");
+        assert.done();
+    },
+
+    getResource: function(assert) {
+        server.addResource(simpleResourceInfo);
+        var resource = server.getResource("example");
+        assert.equals(resource.name, "example");
+        assert.done();
     },
 
     runServer: {
@@ -244,6 +261,12 @@ function getTestData(data) {
             return {
                 name: "example",
                 repository: "InMemory"
-            }
+            };
+        case "resourceWithLinked":
+            return {
+                name: "some",
+                repository: "InMemory",
+                linkedResourcesNames: ["example"]
+            };
     }
 }

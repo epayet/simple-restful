@@ -41,6 +41,12 @@ module.exports = {
             assert.equals(subResource.getUriWithIdField(), "/example/:name/sub/:subId");
             assert.done();
         }
+    },
+
+    addLinkedResource: function(assert) {
+        simpleResource.addLinkedResource(subResource);
+        assert.equals(simpleResource.getLinkedResource("sub").name, "sub");
+        assert.done();
     }
 };
 
