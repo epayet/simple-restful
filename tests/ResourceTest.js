@@ -46,6 +46,7 @@ module.exports = {
     addLinkedResource: function(assert) {
         simpleResource.addLinkedResource(subResource);
         assert.equals(simpleResource.getLinkedResource("sub").name, "sub");
+        assert.equals(simpleResource.repository.linkedRepositories["sub"].dataName, "sub");
         assert.done();
     }
 };

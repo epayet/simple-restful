@@ -22,6 +22,7 @@ Resource.prototype.getUriWithIdField = function() {
 
 Resource.prototype.addLinkedResource = function(linkedResource) {
     this.linkedResources[linkedResource.name] = linkedResource;
+    this.repository.addLinkedRepository(linkedResource.name, linkedResource.repository);
 };
 
 Resource.prototype.getLinkedResource = function(name) {

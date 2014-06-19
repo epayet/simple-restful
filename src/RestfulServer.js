@@ -45,7 +45,7 @@ RestfulServer.prototype.close = function() {
 };
 
 RestfulServer.prototype.run = function() {
-//    this.setLinkedResources();
+    this.setLinkedResources();
     this.createRoutes();
     var self = this;
     this.server.listen(this.port, function() {
