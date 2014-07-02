@@ -50,7 +50,7 @@ RestfulServer.prototype.run = function() {
     var self = this;
     this.server.listen(this.port, function() {
         if(self.debug) {
-            console.log('server listening at %s', self.server.url);
+            console.log('server listening at localhost:%s', self.port);
             console.log('Routes available');
             for(var i=0; i<self.routes.length; i++) {
                 console.log(self.routes[i].verb + " " + self.routes[i].uri);
