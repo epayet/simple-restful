@@ -9,6 +9,7 @@ var simpleResourceInfo = getTestData("simpleResource");
 var resourceWithSubs = getTestData("resourceWithSubs");
 var resourceNoIdField = getTestData("resourceNoIdField");
 var resourceWithLinkedResource = getTestData("resourceWithLinked");
+var resourceWithSubsNoIdField = getTestData("resourceWithSubsNoIdField");
 
 module.exports = {
     setUp: function(callback) {
@@ -65,6 +66,16 @@ module.exports = {
                 assert.equals(server.routes.length, 10);
                 var routeGetSub = server.routes[6];
                 assert.equals(routeGetSub.uri, "/parent/:id/sub/:subId");
+                assert.done();
+            },
+
+            no_idField: function(assert) {
+                server.addResource(resourceWithSubsNoIdField);
+
+                assert.equals(server.routes.length, 7);
+                var subRouteAdd = server.routes[6];
+                assert.equals(subRouteAdd.uri, "/parent/:id/sub");
+                assert.equals(subRouteAdd.verb, "POST");
                 assert.done();
             }
         },
@@ -253,6 +264,18 @@ function getTestData(data) {
                     {
                         name: "sub",
                         idField: "subId",
+                        repository: "InMemory"
+                    }
+                ]
+            };
+        case "resourceWithSubsNoIdField":
+            return {
+                name: "parent",
+                idField: "id",
+                repository: "InMemory",
+                subResources: [
+                    {
+                        name: "sub",
                         repository: "InMemory"
                     }
                 ]
