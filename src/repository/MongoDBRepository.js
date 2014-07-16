@@ -38,35 +38,11 @@ Repository.prototype.getAll = function(callback, additionalIdentifiers) {
 };
 
 Repository.prototype.add = function(resource, callback, additionalIdentifiers) {
-    var self = this;
-    if(resource._id) {
-        resource._id = new ObjectID(resource._id);
-    }
-    async.parallel([
-        function(callback) {
-            repositoryUtil.prepareParentAndChildForAdd(self, resource, function(preparedResource) {
-                callback(null, preparedResource);
-            }, additionalIdentifiers);
-        },
-
-        function(callback) {
-            self._connect(function(collection, closeCallback) {
-                callback(null, {collection:collection, closeCallback:closeCallback});
-            });
-        }
-    ], function(err, results) {
-        var collection = results[1].collection;
-        var closeCallback = results[1].closeCallback;
-        var preparedResource = results[0];
-        collection.save(preparedResource, {safe:true}, function(err, records) {
-            callback(records);
-            closeCallback();
-        });
-    });
+    this._save(resource, callback, additionalIdentifiers);
 };
 
 Repository.prototype.update = function(resource, callback, additionalIdentifiers) {
-    this.add(resource, callback, additionalIdentifiers);
+    this._save(resource, callback, additionalIdentifiers);
 };
 
 Repository.prototype.remove = function(resourceId, callback, additionalIdentifiers) {
@@ -130,6 +106,34 @@ Repository.prototype._createFilter = function(resourceId, additionalIdentifiers)
 
 Repository.prototype._createMongoUri = function() {
     this.mongoUri = "mongodb://" + this.serverUrl + "/" + this.database;
+};
+
+Repository.prototype._save = function(resource, callback, additionalIdentifiers) {
+    var self = this;
+    if(resource._id) {
+        resource._id = new ObjectID(resource._id);
+    }
+    async.parallel([
+        function(callback) {
+            repositoryUtil.prepareParentAndChildForAdd(self, resource, function(preparedResource) {
+                callback(null, preparedResource);
+            }, additionalIdentifiers);
+        },
+
+        function(callback) {
+            self._connect(function(collection, closeCallback) {
+                callback(null, {collection:collection, closeCallback:closeCallback});
+            });
+        }
+    ], function(err, results) {
+        var collection = results[1].collection;
+        var closeCallback = results[1].closeCallback;
+        var preparedResource = results[0];
+        collection.save(preparedResource, {safe:true}, function(err, records) {
+            callback(records);
+            closeCallback();
+        });
+    });
 };
 
 module.exports = Repository;
