@@ -25,6 +25,7 @@
     "node": "*"
   },
   "devDependencies": {
-    "request": "~2.36.0"
+    "request": "~2.36.0",
+    "jasmine-node": "~2.0.0"
   }
 }
