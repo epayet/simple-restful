@@ -14,54 +14,38 @@ describe("Resource", function () {
         subResource = new ResourceWithParent(subResourceInfo, simpleResource);
     });
 
-    it("should get simple uri", function () {
-        expect(simpleResource.getUri()).toBe("/example");
+    describe("simple", function () {
+        it("should get simple uri", function () {
+            expect(simpleResource.getUri()).toBe("/example");
+        });
+
+        it("should get an uri with id field", function () {
+            expect(simpleResource.getUriWithIdField()).toBe("/example/:name");
+        });
+    });
+
+    describe("with parent", function () {
+        it("should create a resource with parent", function () {
+            expect(subResource.parent).toBeDefined();
+        });
+
+        it("should get a correct uri", function () {
+            expect(subResource.getUri()).toBe("/example/:name/sub");
+        });
+
+        it("should get the uri with id field", function () {
+            expect(subResource.getUriWithIdField()).toBe("/example/:name/sub/:subId");
+        });
+    });
+
+    describe("addLinkedResource", function () {
+        it("should be accessible", function () {
+            simpleResource.addLinkedResource(subResource);
+            expect(simpleResource.getLinkedResource("sub").name).toBe("sub");
+            expect(simpleResource.repository.linkedRepositories["sub"].dataName).toBe("sub");
+        });
     });
 });
-
-module.exports = {
-    setUp: function(callback) {
-        simpleResource = new Resource(simpleResourceInfo);
-        subResource = new ResourceWithParent(subResourceInfo, simpleResource);
-        callback();
-    },
-
-    simple: {
-        simpleGetUri: function (assert) {
-            assert.equals(simpleResource.getUri(), "/example");
-            assert.done();
-        },
-
-        getUriWithIdField: function (assert) {
-            assert.equals(simpleResource.getUriWithIdField(), "/example/:name");
-            assert.done();
-        }
-    },
-
-    withParent: {
-        createResourceWithParent: function(assert) {
-            assert.notEqual(subResource.parent, null);
-            assert.done();
-        },
-
-        getUri: function(assert) {
-            assert.equals(subResource.getUri(), "/example/:name/sub");
-            assert.done();
-        },
-
-        getUriWithIdField: function(assert) {
-            assert.equals(subResource.getUriWithIdField(), "/example/:name/sub/:subId");
-            assert.done();
-        }
-    },
-
-    addLinkedResource: function(assert) {
-        simpleResource.addLinkedResource(subResource);
-        assert.equals(simpleResource.getLinkedResource("sub").name, "sub");
-        assert.equals(simpleResource.repository.linkedRepositories["sub"].dataName, "sub");
-        assert.done();
-    }
-};
 
 function getTestData(data) {
     switch(data) {
