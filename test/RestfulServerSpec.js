@@ -1,5 +1,4 @@
 var RestfulServer = require("../src/RestfulServer");
-var request = require("request");
 var restify = require("restify");
 var InMemoryRepository = require("../src/repository/InMemoryRepository");
 
@@ -11,142 +10,137 @@ var resourceNoIdField = getTestData("resourceNoIdField");
 var resourceWithLinkedResource = getTestData("resourceWithLinked");
 var resourceWithSubsNoIdField = getTestData("resourceWithSubsNoIdField");
 
-module.exports = {
-    setUp: function(callback) {
+describe("RestfulServer", function () {
+    beforeEach(function () {
         server = new RestfulServer({port: 8081, debug:false});
         server.registerRepositories({
             "InMemory": InMemoryRepository
         });
         client = restify.createJsonClient({url: "http://localhost:8081"});
-        callback();
-    },
+    });
 
-    tearDown: function(callback) {
+    afterEach(function () {
         server.close();
         client.close();
-        callback();
-    },
+    });
 
-    resource: {
-        simple: {
-            addSimpleResource_ServerNotRunning: function (assert) {
+    describe("resource", function () {
+        describe("simple", function () {
+            it("should add a simple resource, server not running", function () {
                 server.addResource(simpleResourceInfo);
 
-                assert.equals(server.resources.length, 1);
-                assert.same(server.resources[0].name, simpleResourceInfo.name);
-                assert.same(server.resources[0].idField, simpleResourceInfo.idField);
-                assert.ok(server.resources[0].repository instanceof InMemoryRepository);
-                assert.equals(server.server.isRunning, false);
-                assert.done();
-            },
+                expect(server.resources.length).toBe(1);
+                expect(server.resources[0].name).toBe(simpleResourceInfo.name);
+                expect(server.resources[0].idField).toBe(simpleResourceInfo.idField);
+                expect(server.resources[0].repository instanceof InMemoryRepository).toBe(true);
+                expect(server.server.isRunning).toBe(false);
+            });
 
-            addResource_5RoutesRegistred: function(assert) {
+            it("should have 5 routes registered", function () {
                 server.addResource(simpleResourceInfo);
 
-                assert.equals(server.routes.length, 5);
+                expect(server.routes.length).toBe(5);
                 var getAllRoute = server.routes[0];
-                assert.equals(getAllRoute.verb, "GET");
-                assert.equals(getAllRoute.uri, "/example");
-                assert.equals(getAllRoute.repositoryMethod, "getAll");
-                assert.done();
-            }
-        },
+                expect(getAllRoute.verb).toBe("GET");
+                expect(getAllRoute.uri).toBe("/example");
+                expect(getAllRoute.repositoryMethod).toBe("getAll");
+            });
+        });
 
-        subResources: {
-            addResourceWithSubs_2resourcesRegistred: function(assert) {
+        describe("subResources", function () {
+            it("should have 2 resources registred", function () {
+                server.addResource(resourceWithSubs);
+                expect(server.resources.length).toBe(2);
+            });
+
+            it("should have 10 routes registred", function () {
                 server.addResource(resourceWithSubs);
 
-                assert.equals(server.resources.length, 2);
-                assert.done();
-            },
-
-            addResource_10RoutesRegistred: function(assert) {
-                server.addResource(resourceWithSubs);
-
-                assert.equals(server.routes.length, 10);
+                expect(server.routes.length).toBe(10);
                 var routeGetSub = server.routes[6];
-                assert.equals(routeGetSub.uri, "/parent/:id/sub/:subId");
-                assert.done();
-            },
+                expect(routeGetSub.uri).toBe("/parent/:id/sub/:subId");
+            });
+        });
 
-            no_idField: function(assert) {
+        describe("no id field", function () {
+            it("should have two routes", function () {
+                server.addResource(resourceNoIdField);
+
+                expect(server.routes.length).toBe(2);
+                var routeAdd = server.routes[1];
+                expect(routeAdd.uri).toBe("/example");
+                expect(routeAdd.verb).toBe("POST");
+            });
+
+            it("should have 7 routes registred if subid is no id field", function () {
                 server.addResource(resourceWithSubsNoIdField);
 
-                assert.equals(server.routes.length, 7);
+                expect(server.routes.length).toBe(7);
                 var subRouteAdd = server.routes[6];
-                assert.equals(subRouteAdd.uri, "/parent/:id/sub");
-                assert.equals(subRouteAdd.verb, "POST");
-                assert.done();
-            }
-        },
+                expect(subRouteAdd.uri).toBe("/parent/:id/sub");
+                expect(subRouteAdd.verb).toBe("POST");
+            });
+        });
 
-        noIdField: function(assert) {
-            server.addResource(resourceNoIdField);
+        describe("linked resource", function () {
+            it("should have a linked resource", function () {
+                server.addResource(simpleResourceInfo);
+                server.addResource(resourceWithLinkedResource);
+                server.setLinkedResources();
+                var resourceWithLinked = server.resources[1];
+                expect(resourceWithLinked.linkedResources["example"]).not.toBe(null);
+            });
+        });
 
-            assert.equals(server.routes.length, 2);
-            var routeAdd = server.routes[1];
-            assert.equals(routeAdd.uri, "/example");
-            assert.equals(routeAdd.verb, "POST");
-            assert.done();
-        }
-    },
+        describe("getResource", function () {
+            it("should get one resource", function () {
+                server.addResource(simpleResourceInfo);
+                var resource = server.getResource("example");
+                expect(resource.name).toBe("example");
+            });
+        });
+    });
 
-    linkedResources: function(assert) {
-        server.addResource(simpleResourceInfo);
-        server.addResource(resourceWithLinkedResource);
-        server.setLinkedResources();
-        var resourceWithLinked = server.resources[1];
-        assert.ok(resourceWithLinked.linkedResources["example"] != null, "shoud have linked resources");
-        assert.done();
-    },
-
-    getResource: function(assert) {
-        server.addResource(simpleResourceInfo);
-        var resource = server.getResource("example");
-        assert.equals(resource.name, "example");
-        assert.done();
-    },
-
-    runServer: {
-        simpleRoutes: {
-            getAll_Empty: function (assert) {
+    describe("Integration :: runServer", function () {
+        describe("simple routes", function () {
+            it("should get all and get empty", function (done) {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
                 client.get("/example", function (err, req, res, obj) {
-                    assert.same(obj, []);
-                    assert.done();
+                    expect(obj).toEqual([]);
+                    done();
                 });
-            },
+            });
 
-            addResource_getAll_One: function (assert) {
+            it("should add a resource and then getAll have one", function (done) {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
                 var objInserted = {"name": "test"};
                 client.post("/example", objInserted, function () {
                     client.get("/example", function (err, req, res, obj) {
-                        assert.equal(obj.length, 1);
-                        assert.same(obj[0], objInserted);
-                        assert.done();
+                        expect(obj.length).toBe(1);
+                        expect(obj[0]).toEqual(objInserted);
+                        done();
                     });
                 });
-            },
+            });
 
-            addResource_getOne: function (assert) {
+            it("should add a resource and then get one", function (done) {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
                 var objInserted = {"name": "test"};
                 client.post("/example", objInserted, function () {
                     client.get("/example/test", function (err, req, res, obj) {
-                        assert.same(obj, objInserted);
-                        assert.done();
+                        expect(obj).toEqual(objInserted);
+                        done();
                     });
                 });
-            },
+            });
 
-            updateResource_resourceChanged: function (assert) {
+            it("should update a resource and be changed", function (done) {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
@@ -155,94 +149,81 @@ module.exports = {
                     var objChanged = {"name": "test", someStuff: "stuff"};
                     client.put("/example/test", objChanged, function () {
                         client.get("/example/test", function (err, req, res, obj) {
-                            assert.same(obj, objChanged);
-                            assert.done();
+                            expect(obj).toEqual(objChanged);
+                            done();
                         });
                     });
                 });
-            },
+            });
 
-            deleteAfterAdded: function (assert) {
+            it("should delete a resource", function (done) {
                 server.addResource(simpleResourceInfo);
                 server.run();
 
                 client.post("/example", {name: "test"}, function () {
                     client.del("/example/test", function () {
                         client.get("/example", function (err, req, res, obj) {
-                            assert.equals(obj.length, 0);
-                            assert.done();
+                            expect(obj.length).toBe(0);
+                            done();
                         });
                     });
                 });
-            }
-        },
+            });
+        });
 
-        subResource: {
-            getAll_Empty: function (assert) {
+        describe("sub resource", function () {
+            it("should getAll empty", function (done) {
                 prepareServerForSubResources(function () {
                     client.get("/parent/1/sub", function (err, req, res, obj) {
-                        assert.same(obj, []);
-                        assert.done();
+                        expect(obj).toEqual([]);
+                        done();
                     });
                 });
-            },
+            });
 
-            addResource_getAll_One: function (assert) {
+            it("should add a resource and getAll one", function (done) {
                 prepareServerForSubResources(function () {
                     client.post("/parent/1/sub", {"subId": "test"}, function () {
                         client.get("/parent/1/sub", function (err, req, res, obj) {
-                            assert.equal(obj.length, 1);
+                            expect(obj.length).toBe(1);
                             //id parent appeared
-                            assert.same(obj[0], {"subId": "test", id:1});
-                            assert.done();
+                            //TODO should be an int ?
+                            expect(obj[0]).toEqual({"subId": "test", id: "1"});
+                            done();
                         });
                     });
                 });
-            },
+            });
 
-            deleteParent_noSubs: function(assert) {
+            it("should delete a parent and subs disappear", function (done) {
                 prepareServerForSubResources(function () {
                     //Add one sub
                     client.post("/parent/1/sub", {subId: 1}, function (err) {
                         //Check there is 1 sub
                         client.get("/parent/1/sub", function (err, req, res, obj) {
-                            assert.equals(obj.length, 1);
+                            expect(obj.length).toBe(1);
                             //Delete parent
                             client.del("/parent/1", function () {
                                 //Check no sub exists anymore
                                 client.get("/parent/1/sub", function (err, req, res, obj) {
-                                    assert.equals(obj.length, 0);
-                                    assert.done();
+                                    expect(obj.length).toBe(0);
+                                    done();
                                 });
                             });
                         });
                     });
                 });
-            }
-        }
+            });
+        });
+    });
 
-        //TODO noIdField: means no add method, only update and {} by default
-//        noIdField: {
-////            t: function(assert) {
-////                server.addResource(noIdFieldResource);
-////                server.run();
-////
-////
-////            }
-//        }
-    }
-};
+    //TODO noIdField: means no add method, only update and {} by default
+});
 
 function prepareServerForSubResources(callback) {
     server.addResource(resourceWithSubs);
     server.run();
     client.post("/parent", {id: 1}, function () {
-        callback();
-    });
-}
-
-function addParentData(id, callback) {
-    client.post("/parent", {id: id}, function () {
         callback();
     });
 }
