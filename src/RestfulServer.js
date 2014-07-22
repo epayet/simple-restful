@@ -128,7 +128,6 @@ RestfulServer.prototype.registerRoutes = function(resource) {
             debug: this.debug
         });
     } else {
-        //TODO noIdField: means no add method, only update and {} by default
         this.routes.push({
             verb: "GET",
             uri: resource.getUri(),
