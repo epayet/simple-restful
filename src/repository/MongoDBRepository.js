@@ -1,5 +1,5 @@
 var BaseRepository = require("./BaseRepository");
-var repositoryUtil = require("./repositoryUtil");
+var repositoryUtil = require("./../repositoryUtil");
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 var async = require("async");

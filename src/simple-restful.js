@@ -3,7 +3,7 @@ var InMemoryRepository = require("./repository/InMemoryRepository");
 var FileRepository = require("./repository/FileRepository");
 var MongoDBRepository = require("./repository/MongoDBRepository");
 var RestfulServer = require("./RestfulServer");
-var repositoryUtil = require("./repository/repositoryUtil");
+var repositoryUtil = require("./repositoryUtil");
 
 var defaultRepositories = {
     "InMemory": InMemoryRepository,

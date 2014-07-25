@@ -1,5 +1,5 @@
 var BaseRepository = require('./BaseRepository');
-var repositoryUtil = require("./repositoryUtil");
+var repositoryUtil = require("./../repositoryUtil");
 var fs = require('fs');
 var path = require("path");
 

@@ -1,4 +1,4 @@
-var repositoryUtil = require("../src/repository/repositoryUtil");
+var repositoryUtil = require("../src/repositoryUtil");
 var InMemoryRepository = require("../src/repository/InMemoryRepository");
 
 var dataInfo = {
