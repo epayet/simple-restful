@@ -1,11 +1,9 @@
 var serverFactory = require("./server/serverFactory");
-var Resource = require("./resource/Resource");
-var ResourceWithParent = require("./resource/ResourceWithParent");
+var resourceFactory = require("./resource/resourceFactory");
 var _ = require("underscore");
 
 var RestfulServer = function (options) {
     this.resources = [];
-    this.repositoryClasses = {};
     this.routes = [];
     if(options) {
         this.port = options.port ? options.port : 8080;
@@ -15,28 +13,14 @@ var RestfulServer = function (options) {
 };
 
 RestfulServer.prototype.addResource = function(resourceInfo, parent) {
-    resourceInfo.repositoryClass = this.repositoryClasses[resourceInfo.repository];
-    var resource;
-    if(parent)
-        resource = new ResourceWithParent(resourceInfo, parent);
-    else
-        resource = new Resource(resourceInfo);
+    var resource = resourceFactory.createResource(resourceInfo, parent);
     this.resources.push(resource);
-    this.registerRoutes(resource);
+    this.routes = this.routes.concat(resource.getRoutes());
     if(resourceInfo.subResources) {
         for (var i = 0; i < resourceInfo.subResources.length; i++) {
             this.addResource(resourceInfo.subResources[i], resource);
         }
     }
-};
-
-RestfulServer.prototype.registerRepository = function(repositoryName, repository) {
-    this.repositoryClasses[repositoryName] = repository;
-};
-
-RestfulServer.prototype.registerRepositories = function(repositories) {
-    for(var name in repositories)
-        this.repositoryClasses[name] = repositories[name];
 };
 
 RestfulServer.prototype.close = function() {
@@ -45,7 +29,6 @@ RestfulServer.prototype.close = function() {
 };
 
 RestfulServer.prototype.run = function() {
-    this.setLinkedResources();
     this.createRoutes();
     var self = this;
     this.server.listen(this.port, function() {
@@ -59,91 +42,9 @@ RestfulServer.prototype.run = function() {
     });
 };
 
-RestfulServer.prototype.setLinkedResources = function() {
-    for(var i=0; i<this.resources.length; i++) {
-        if(this.resources[i].linkedResourcesNames) {
-            for (var j = 0; j < this.resources[i].linkedResourcesNames.length; j++) {
-                var resource = this.getResource(this.resources[i].linkedResourcesNames[j]);
-                this.resources[i].addLinkedResource(resource);
-            }
-        }
-    }
-};
-
-RestfulServer.prototype.getResource = function(name) {
-    return _.find(this.resources, function (resource) {
-        return resource.name == name
-    });
-};
-
 RestfulServer.prototype.createRoutes = function() {
     for(var i=0; i<this.routes.length; i++) {
         this.createRoute(this.routes[i]);
-    }
-};
-
-RestfulServer.prototype.registerRoutes = function(resource) {
-    if(resource.idField) {
-        this.routes.push({
-            verb: "GET",
-            uri: resource.getUri(),
-            repository: resource.repository,
-            repositoryMethod: "getAll",
-            debug: this.debug
-        });
-
-        this.routes.push({
-            verb: "GET",
-            uri: resource.getUriWithIdField(),
-            repository: resource.repository,
-            repositoryMethod: "get",
-            parameterType: "id",
-            debug: this.debug
-        });
-
-        this.routes.push({
-            verb: "POST",
-            uri: resource.getUri(),
-            repository: resource.repository,
-            repositoryMethod: "add",
-            parameterType: "body",
-            debug: this.debug
-        });
-
-        this.routes.push({
-            verb: "PUT",
-            uri: resource.getUriWithIdField(),
-            repository: resource.repository,
-            repositoryMethod: "update",
-            parameterType: "body",
-            debug: this.debug
-        });
-
-        this.routes.push({
-            verb: "DELETE",
-            uri: resource.getUriWithIdField(),
-            repository: resource.repository,
-            repositoryMethod: "remove",
-            parameterType: "id",
-            debug: this.debug
-        });
-    } else {
-        this.routes.push({
-            verb: "GET",
-            uri: resource.getUri(),
-            repository: resource.repository,
-            repositoryMethod: "getAll",
-            debug: this.debug
-        });
-
-        this.routes.push({
-            verb: "POST",
-            uri: resource.getUri(),
-            repository: resource.repository,
-            repositoryMethod: "add",
-            parameterType: "body",
-            debug: this.debug
-        });
     }
 };
 
@@ -170,16 +71,17 @@ RestfulServer.prototype.createRoute = function(infos) {
         //additionalIdentifiers is the merge with req.params and req.query, careful : may overwrite one or the other
         var additionalIdentifiers = _.extend(req.params, req.query);
         var id = req.params[infos.repository.idField];
+        var controller = infos.resource.controller;
 
         switch(infos.parameterType) {
             default:
-                infos.repository[infos.repositoryMethod](repositoryCallback, additionalIdentifiers);
+                controller[infos.controllerMethod](repositoryCallback, additionalIdentifiers);
                 break;
             case "id":
-                infos.repository[infos.repositoryMethod](id, repositoryCallback, additionalIdentifiers);
+                controller[infos.controllerMethod](id, repositoryCallback, additionalIdentifiers);
                 break;
             case "body":
-                infos.repository[infos.repositoryMethod](req.body, repositoryCallback, additionalIdentifiers);
+                controller[infos.controllerMethod](req.body, repositoryCallback, additionalIdentifiers);
                 break;
         }
 

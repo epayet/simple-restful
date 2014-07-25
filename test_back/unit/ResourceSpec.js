@@ -1,6 +1,8 @@
-var Resource = require("../src/resource/Resource");
-var ResourceWithParent = require("../src/resource/ResourceWithParent");
-var InMemoryRepository = require("../src/repository/InMemoryRepository");
+var Resource = require("../../src/resource/Resource");
+var ResourceWithParent = require("../../src/resource/ResourceWithParent");
+var BaseController = require("../../src/controller/BaseController");
+
+var controller = new BaseController();
 
 var simpleResourceInfo = getTestData("simpleResource");
 var subResourceInfo = getTestData("subResource");
@@ -12,6 +14,17 @@ describe("Resource", function () {
     beforeEach(function () {
         simpleResource = new Resource(simpleResourceInfo);
         subResource = new ResourceWithParent(subResourceInfo, simpleResource);
+    });
+
+    describe("initialization", function () {
+        it("should be defined", function () {
+            expect(simpleResource).toBeDefined();
+            expect(subResource).toBeDefined();
+        });
+
+        it("should have correct values", function () {
+            expect(simpleResource.controller).toBe(controller);
+        });
     });
 
     describe("simple", function () {
@@ -37,14 +50,6 @@ describe("Resource", function () {
             expect(subResource.getUriWithIdField()).toBe("/example/:name/sub/:subId");
         });
     });
-
-    describe("addLinkedResource", function () {
-        it("should be accessible", function () {
-            simpleResource.addLinkedResource(subResource);
-            expect(simpleResource.getLinkedResource("sub").name).toBe("sub");
-            expect(simpleResource.repository.linkedRepositories["sub"].dataName).toBe("sub");
-        });
-    });
 });
 
 function getTestData(data) {
@@ -53,13 +58,13 @@ function getTestData(data) {
             return {
                 name: "example",
                 idField: "name",
-                repositoryClass: InMemoryRepository
+                controller: controller
             };
         case "subResource":
             return {
                 name: "sub",
                 idField: "subId",
-                repositoryClass: InMemoryRepository
+                controller: controller
             }
     }
 }

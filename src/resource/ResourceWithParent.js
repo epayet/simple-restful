@@ -3,7 +3,6 @@ var Resource = require("./Resource");
 var ResourceWithParent = function(infos, parent) {
     Resource.call(this, infos);
     this.parent = parent;
-    this.parent.repository.addSubRepository(this.repository);
 };
 
 ResourceWithParent.prototype = Object.create(Resource.prototype);

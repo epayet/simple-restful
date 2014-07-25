@@ -6,7 +6,6 @@ var Repository = function(dataInfo, repositoryInfo) {
         this.dataName = dataInfo.name;
     }
     this.subRepositories = [];
-    this.linkedRepositories = {};
 };
 
 Repository.prototype.get = function(resourceId, callback, additionalIdentifiers) {
@@ -66,10 +65,6 @@ Repository.prototype.getMultiple = function(resourceIds, callback, additionalIde
 Repository.prototype.addSubRepository = function(subRepository) {
     subRepository.parentRepository = this;
     this.subRepositories.push(subRepository);
-};
-
-Repository.prototype.addLinkedRepository = function(repositoryName, repository) {
-    this.linkedRepositories[repositoryName] = repository;
 };
 
 Repository.prototype.hasParent = function() {

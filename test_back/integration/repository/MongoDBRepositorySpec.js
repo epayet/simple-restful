@@ -1,5 +1,5 @@
-var BaseRepositorySpec = require("../../testUtil/BaseRepositorySpec");
-var MongoDBRepository = require("../../src/repository/MongoDBRepository");
+var BaseRepositorySpec = require("../../../testUtil/BaseRepositorySpec");
+var MongoDBRepository = require("../../../src/repository/MongoDBRepository");
 
 //BaseRepositorySpec.runRepositoryTest(MongoDBRepository, {
 //    mongoOptions: {
