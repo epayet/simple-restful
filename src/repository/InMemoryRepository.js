@@ -43,7 +43,7 @@ Repository.prototype.add = function(resource, callback, additionalIdentifiers) {
     var self = this;
     repositoryUtil.prepareParentAndChildForAdd(this, resource, function(preparedResource) {
         self.data.push(preparedResource);
-        callback(preparedResource);
+        if(callback) callback(preparedResource);
     }, additionalIdentifiers);
 };
 
