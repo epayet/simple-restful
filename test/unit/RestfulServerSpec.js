@@ -1,14 +1,10 @@
 var RestfulServer = require("../../src/RestfulServer");
-var BaseController = require("../../src/controller/BaseController");
 
 var server;
 
-var controller = new BaseController();
+var controller = new function(){};
 
 var simpleResourceInfo = getTestData("simpleResource");
-var resourceWithSubs = getTestData("resourceWithSubs");
-var resourceNoIdField = getTestData("resourceNoIdField");
-var resourceWithSubsNoIdField = getTestData("resourceWithSubsNoIdField");
 
 describe("RestfulServer", function () {
     beforeEach(function () {
@@ -35,36 +31,6 @@ function getTestData(data) {
             return {
                 name: "example",
                 idField: "name",
-                controller: controller
-            };
-        case "resourceWithSubs":
-            return {
-                name: "parent",
-                idField: "id",
-                controller: controller,
-                subResources: [
-                    {
-                        name: "sub",
-                        idField: "subId",
-                        controller: controller
-                    }
-                ]
-            };
-        case "resourceWithSubsNoIdField":
-            return {
-                name: "parent",
-                idField: "id",
-                controller: controller,
-                subResources: [
-                    {
-                        name: "sub",
-                        controller: controller
-                    }
-                ]
-            };
-        case "resourceNoIdField":
-            return {
-                name: "example",
                 controller: controller
             };
     }

@@ -1,7 +1,12 @@
+var DataController = require("../controller/DataController");
+
 var Resource = function (infos) {
     this.name = infos.name;
     this.idField = infos.idField;
-    this.controller = infos.controller;
+    if(infos.controller)
+        this.controller = infos.controller;
+    else if(infos.repository)
+        this.controller = new DataController(infos, infos.repositoryOptions);
 };
 
 Resource.prototype.getUri = function() {

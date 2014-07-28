@@ -2,21 +2,25 @@ var Resource = require("../../../src/resource/Resource");
 var ResourceWithParent = require("../../../src/resource/ResourceWithParent");
 var ResourceWithNoIdField = require("../../../src/resource/ResourceWithNoIdField");
 var ResourceWithParentAndNoIdField = require("../../../src/resource/ResourceWithParentAndNoIdField");
-var BaseController = require("../../../src/controller/BaseController");
+var DataController = require("../../../src/controller/DataController");
 
-var controller = new BaseController();
+var controller = new function(){};
 
 var simpleResourceInfo = getTestData("simpleResource");
 var subResourceInfo = getTestData("subResource");
 var noIdFieldInfo = getTestData("noIdField");
 var parentNoIdFieldInfo = getTestData("parentNoIdField");
+var dataResourceInfo = getTestData("dataResource");
+var subDataResourceInfo = getTestData("subDataResource");
 
-var simpleResource, subResource, noIdField, parentNoIdField;
+var simpleResource, subResource, noIdField, parentNoIdField, dataResource, subDataResource;
 
 describe("Resource", function () {
 
     beforeEach(function () {
         simpleResource = new Resource(simpleResourceInfo);
+        dataResource = new Resource(dataResourceInfo);
+        subDataResource = new ResourceWithParent(subDataResourceInfo, dataResource);
         subResource = new ResourceWithParent(subResourceInfo, simpleResource);
         noIdField = new ResourceWithNoIdField(noIdFieldInfo);
         parentNoIdField = new ResourceWithParentAndNoIdField(parentNoIdFieldInfo, simpleResource);
@@ -28,6 +32,8 @@ describe("Resource", function () {
             expect(subResource).toBeDefined();
             expect(noIdField).toBeDefined();
             expect(parentNoIdField).toBeDefined();
+            expect(dataResource).toBeDefined();
+            expect(subDataResource).toBeDefined();
         });
 
         it("should have correct simple values", function () {
@@ -36,6 +42,14 @@ describe("Resource", function () {
 
         it("should create a resource with parent", function () {
             expect(subResource.parent).toBeDefined();
+        });
+
+        it("should create a resource with a repository and create a DataController", function () {
+            expect(dataResource.controller instanceof DataController).toBe(true);
+        });
+
+        it("should create a sub data resource if parent is data", function () {
+            expect(subDataResource.controller.repository.hasParent()).toBe(true);
         });
     });
 
@@ -120,6 +134,16 @@ function getTestData(data) {
             return {
                 name: "noIdField",
                 controller: controller
+            };
+        case "dataResource":
+            return {
+                name: "data",
+                repository: "InMemory"
+            };
+        case "subDataResource":
+            return {
+                name: "subData",
+                repository: "InMemory"
             };
     }
 }

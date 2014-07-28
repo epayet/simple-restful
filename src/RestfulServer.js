@@ -48,41 +48,45 @@ RestfulServer.prototype.createRoutes = function() {
     }
 };
 
-RestfulServer.prototype.createRoute = function(infos) {
-    switch(infos.verb) {
+RestfulServer.prototype.createRoute = function(route) {
+    switch(route.verb) {
         case "GET":
-            this.server.get(infos.uri, execute);
+            this.server.get(route.uri, execute);
             break;
         case "POST":
-            this.server.post(infos.uri, execute);
+            this.server.post(route.uri, execute);
             break;
         case "PUT":
-            this.server.put(infos.uri, execute);
+            this.server.put(route.uri, execute);
             break;
         case "DELETE":
-            this.server.del(infos.uri, execute);
+            this.server.del(route.uri, execute);
             break;
     }
 
     function execute(req, res) {
-        if (infos.debug)
-            console.log("%s %s", infos.verb, req.url);
+        if (route.debug)
+            console.log("%s %s", route.verb, req.url);
 
         //additionalIdentifiers is the merge with req.params and req.query, careful : may overwrite one or the other
         var additionalIdentifiers = _.extend(req.params, req.query);
-        var id = req.params[infos.repository.idField];
-        var controller = infos.resource.controller;
+        var id = req.params[route.resource.idField];
+        var controller = route.resource.controller;
 
-        switch(infos.parameterType) {
-            default:
-                controller[infos.controllerMethod](repositoryCallback, additionalIdentifiers);
-                break;
-            case "id":
-                controller[infos.controllerMethod](id, repositoryCallback, additionalIdentifiers);
-                break;
-            case "body":
-                controller[infos.controllerMethod](req.body, repositoryCallback, additionalIdentifiers);
-                break;
+        if(controller[route.controllerMethod]) {
+            switch (route.parameterType) {
+                default:
+                    controller[route.controllerMethod](repositoryCallback, additionalIdentifiers);
+                    break;
+                case "id":
+                    controller[route.controllerMethod](id, repositoryCallback, additionalIdentifiers);
+                    break;
+                case "body":
+                    controller[route.controllerMethod](req.body, repositoryCallback, additionalIdentifiers);
+                    break;
+            }
+        } else {
+            res.send(404);
         }
 
         function repositoryCallback(resource) {

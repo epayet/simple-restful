@@ -1,8 +1,12 @@
 var Resource = require("./Resource");
+var DataController = require("../controller/DataController");
 
 var ResourceWithParent = function(infos, parent) {
     Resource.call(this, infos);
     this.parent = parent;
+    if(parent.controller instanceof DataController) {
+        parent.controller.repository.addSubRepository(this.controller.repository);
+    }
 };
 
 ResourceWithParent.prototype = Object.create(Resource.prototype);
