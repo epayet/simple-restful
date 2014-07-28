@@ -4,24 +4,21 @@ var FileRepository = require("./repository/FileRepository");
 var MongoDBRepository = require("./repository/MongoDBRepository");
 var RestfulServer = require("./RestfulServer");
 var repositoryUtil = require("./repositoryUtil");
+var DataController = require("./controller/DataController");
 
-var defaultRepositories = {
-    "InMemory": InMemoryRepository,
-    "File": FileRepository,
-    "MongoDB": MongoDBRepository
+var repository = {
+    "InMemoryRepository": InMemoryRepository,
+    "FileRepository": FileRepository,
+    "MongoDBRepository": MongoDBRepository
 };
 
 function createServer(options) {
     var server = new RestfulServer(options);
-    server.registerRepositories(defaultRepositories);
     return server;
-}
-
-function getDefaultRepository(name) {
-    return defaultRepositories[name];
 }
 
 exports.createServer = createServer;
 exports.BaseRepository = BaseRepository;
-exports.getDefaultRepository = getDefaultRepository;
+exports.repository = repository;
 exports.repositoryUtil = repositoryUtil;
+exports.DataController = DataController;
