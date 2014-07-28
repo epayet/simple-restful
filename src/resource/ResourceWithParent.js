@@ -4,7 +4,7 @@ var DataController = require("../controller/DataController");
 var ResourceWithParent = function(infos, parent) {
     Resource.call(this, infos);
     this.parent = parent;
-    if(parent.controller instanceof DataController) {
+    if(parent.controller instanceof DataController && this.controller instanceof DataController) {
         parent.controller.repository.addSubRepository(this.controller.repository);
     }
 };

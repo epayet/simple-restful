@@ -12,8 +12,9 @@ var noIdFieldInfo = getTestData("noIdField");
 var parentNoIdFieldInfo = getTestData("parentNoIdField");
 var dataResourceInfo = getTestData("dataResource");
 var subDataResourceInfo = getTestData("subDataResource");
+var subDataResourceWithControllerInfo = getTestData("subDataResourceWithController");
 
-var simpleResource, subResource, noIdField, parentNoIdField, dataResource, subDataResource;
+var simpleResource, subResource, noIdField, parentNoIdField, dataResource, subDataResource, subDataResourceWithController;
 
 describe("Resource", function () {
 
@@ -21,6 +22,7 @@ describe("Resource", function () {
         simpleResource = new Resource(simpleResourceInfo);
         dataResource = new Resource(dataResourceInfo);
         subDataResource = new ResourceWithParent(subDataResourceInfo, dataResource);
+        subDataResourceWithController = new ResourceWithParent(subDataResourceWithControllerInfo, dataResource);
         subResource = new ResourceWithParent(subResourceInfo, simpleResource);
         noIdField = new ResourceWithNoIdField(noIdFieldInfo);
         parentNoIdField = new ResourceWithParentAndNoIdField(parentNoIdFieldInfo, simpleResource);
@@ -34,6 +36,7 @@ describe("Resource", function () {
             expect(parentNoIdField).toBeDefined();
             expect(dataResource).toBeDefined();
             expect(subDataResource).toBeDefined();
+            expect(subDataResourceWithController).toBeDefined();
         });
 
         it("should have correct simple values", function () {
@@ -144,6 +147,11 @@ function getTestData(data) {
             return {
                 name: "subData",
                 repository: "InMemory"
+            };
+        case "subDataResourceWithController":
+            return {
+                name: "subNoData",
+                controller: controller
             };
     }
 }
