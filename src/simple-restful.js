@@ -5,6 +5,7 @@ var MongoDBRepository = require("./repository/MongoDBRepository");
 var RestfulServer = require("./RestfulServer");
 var repositoryUtil = require("./repositoryUtil");
 var DataController = require("./controller/DataController");
+var repositoryFactory = require("./repository/repositoryFactory");
 
 var repository = {
     "InMemoryRepository": InMemoryRepository,
@@ -18,6 +19,7 @@ function createServer(options) {
 }
 
 exports.createServer = createServer;
+exports.createRepository = repositoryFactory.createRepository;
 exports.BaseRepository = BaseRepository;
 exports.repository = repository;
 exports.repositoryUtil = repositoryUtil;
