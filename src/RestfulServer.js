@@ -12,7 +12,12 @@ var RestfulServer = function (options) {
     }
 };
 
-RestfulServer.prototype.addResource = function(resourceInfo, parent) {
+RestfulServer.prototype.addResource = function(resource, parent) {
+    var resourceInfo;
+    if(resource.info)
+        resourceInfo = resource.info;
+    else
+        resourceInfo = resource;
     var resource = resourceFactory.createResource(resourceInfo, parent);
     this.resources.push(resource);
     this.routes = this.routes.concat(resource.getRoutes());

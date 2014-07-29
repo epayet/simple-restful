@@ -21,6 +21,15 @@ describe("RestfulServer", function () {
             expect(resource.controller).toBe(controller);
             expect(server.routes).toEqual(resource.getRoutes());
         });
+
+        it("should add even if info is a repository", function () {
+            var info = {
+                info: simpleResourceInfo
+            };
+            server.addResource(info);
+            var resource = server.resources[0];
+            expect(resource.idField).toBe("name");
+        });
     });
 
 });
