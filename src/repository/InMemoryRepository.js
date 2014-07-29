@@ -1,5 +1,5 @@
 var BaseRepository = require('./BaseRepository');
-var repositoryUtil = require("./../repositoryUtil");
+var repositoryUtil = require("./repositoryUtil");
 var _ = require("underscore");
 
 //TODO: should use underscore for search into arrays

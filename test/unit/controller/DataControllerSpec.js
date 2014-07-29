@@ -15,12 +15,6 @@ describe("DataController", function () {
             expect(simpleDataController).toBeDefined();
             expect(simpleDataController.repository instanceof InMemoryRepository).toBe(true);
         });
-
-        it("should create a controller with a repository already initialized", function () {
-            var repository = new InMemoryRepository();
-            var controller = new DataController(repository);
-            expect(controller.repository).toBeDefined();
-        });
     });
 
     describe("getAll", function () {
