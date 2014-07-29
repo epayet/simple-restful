@@ -1,4 +1,5 @@
 function createRepository (info, options) {
+    info.repositoryOptions = options;
     var repository = createRepositoryInstance(info, options);
     return {
         get: function(resourceId, callback, additionalIdentifiers) {
