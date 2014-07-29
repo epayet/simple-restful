@@ -1,7 +1,11 @@
 var repositoryFactory = require("../repository/repositoryFactory");
+var BaseRepository = require("../repository/BaseRepository");
 
-function DataController(dataInfo, options) {
-    this.repository = repositoryFactory.createRepository(dataInfo, options);
+function DataController(infos, options) {
+    if(infos instanceof BaseRepository)
+        this.repository = infos;
+    else
+        this.repository = repositoryFactory.createRepository(infos, options);
 }
 
 DataController.prototype.getAll = function(callback, additionalIdentifiers) {
