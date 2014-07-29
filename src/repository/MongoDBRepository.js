@@ -131,7 +131,7 @@ Repository.prototype._save = function(resource, callback, additionalIdentifiers)
         var preparedResource = results[0];
         collection.save(preparedResource, {safe:true}, function(err, records) {
             if(err) throw err;
-            callback(preparedResource);
+            if(callback) callback(preparedResource);
             closeCallback();
         });
     });
