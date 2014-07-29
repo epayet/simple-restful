@@ -15,6 +15,14 @@ describe("DataController", function () {
             expect(simpleDataController).toBeDefined();
             expect(simpleDataController.repository instanceof InMemoryRepository).toBe(true);
         });
+
+        it("should reuse instance instead of creating one", function () {
+            var info = {
+                instance: function(){}
+            };
+            var controller = new DataController(info);
+            expect(controller.repository).toBe(info.instance);
+        });
     });
 
     describe("getAll", function () {
