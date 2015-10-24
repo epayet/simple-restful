@@ -13,19 +13,21 @@ You can use existing storage strategies (MongoDB, files, InMemory for tests, etc
 
 Here the few lines to create you first resource:
 
-    var simpleRestful = require('simple-restful');
-    var server = new simpleRestful.createServer({port: 8080});
+```javascript
+var simpleRestful = require('simple-restful');
+var server = new simpleRestful.createServer({port: 8080});
 
-    //The minimum information to define the resource
-    var simpleResourceInfo = {
-        name: "example",
-        idField: "name",
-        repository: "InMemory"
-    };
+//The minimum information to define the resource
+var simpleResourceInfo = {
+    name: "example",
+    idField: "name",
+    repository: "InMemory"
+};
 
-    //register the resource and then run
-    server.addResource(simpleResourceInfo);
-    server.run();
+//register the resource and then run
+server.addResource(simpleResourceInfo);
+server.run();
+```
 
 These lines mean you created the routes for the "example" resource, and everything will be stored in memory (not persisted).
 
@@ -43,17 +45,19 @@ A repository is like a box containing and handling the resources. Here are the d
 
 The options can be specified this way in the resource definition:
 
-    var simpleResourceInfo = {
-        name: "example",
-        idField: "name",
-        repository: "MongoDB",
-        repositoryOptions: {
-            mongoOptions: {
-                serverUrl: "127.0.0.1:27017",
-                database: "testSimpleRestful"
-            }
+```javascript
+var simpleResourceInfo = {
+    name: "example",
+    idField: "name",
+    repository: "MongoDB",
+    repositoryOptions: {
+        mongoOptions: {
+            serverUrl: "127.0.0.1:27017",
+            database: "testSimpleRestful"
         }
-    };
+    }
+};
+```
 
 #### InMemoryRepository (InMemory)
 
@@ -100,6 +104,7 @@ You can apply the sames operations to them, but the url would be `http://localho
 
 ### TODO
 
+* review implementation
 * example for sub resources
 * example for linked resources
 * methods of repositoryUtil
