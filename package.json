@@ -16,10 +16,6 @@
     "api"
   ],
   "dependencies": {
-    "restify": "*",
-    "mongodb": "*",
-    "async": "*",
-    "underscore": "~1.6.0"
   },
   "engines": {
     "node": "*"
