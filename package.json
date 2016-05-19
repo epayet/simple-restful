@@ -16,12 +16,13 @@
     "api"
   ],
   "dependencies": {
+    "restify": "^4.0.4"
   },
   "engines": {
     "node": "*"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register test",
+    "test": "mocha --compilers js:babel-core/register test/**/**",
     "prepublish": "babel ./src --out-dir ./lib"
   },
   "devDependencies": {
@@ -29,6 +30,8 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-register": "^6.9.0",
     "chai": "^3.5.0",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.4",
+    "supertest": "^1.2.0"
   }
 }
