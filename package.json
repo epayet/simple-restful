@@ -25,7 +25,7 @@
     "node": "*"
   },
   "scripts": {
-    "build": "babel --presets es2015 ./src --out-dir ./lib"
+    "prepublish": "babel --presets es2015 ./src --out-dir ./lib"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
