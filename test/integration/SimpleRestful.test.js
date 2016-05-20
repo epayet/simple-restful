@@ -34,6 +34,7 @@ describe('SimpleRestful', function() {
     let simpleResource = {
       name: "example",
       idField: "id",
+      // TODO do "InMemory" instead
       repository: new InMemoryRepository()
     }
     server.addResource(simpleResource)

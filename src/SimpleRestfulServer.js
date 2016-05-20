@@ -8,6 +8,7 @@ export default class SimpleRestfulServer {
 
   start() {
     this.server.listen(this.options.port, () => {
+      // TODO better logging
       console.log(`Server started at http:localhost:${this.options.port}`)
     })
   }
