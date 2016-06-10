@@ -1,4 +1,5 @@
 import restify from 'restify'
+import { createRepository } from './repository/repositoryFactory'
 
 export default class SimpleRestfulServer {
   constructor(options) {
@@ -18,7 +19,7 @@ export default class SimpleRestfulServer {
   }
 
   addResource(resourceInfo) {
-    let repository = resourceInfo.repository
+    let repository = createRepository(resourceInfo.repository, resourceInfo.repositoryOptions)
 
     this.server.get(`/api/${resourceInfo.name}`, (req, res) => {
       res.send(repository.getAll())

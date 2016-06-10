@@ -56,7 +56,8 @@ describe('SimpleRestfulServer', function() {
     it('should add routes to the server', function() {
       let resourceInfo = {
         name: 'test',
-        idField: 'id'
+        idField: 'id',
+        repository: 'InMemory'
       }
       server.addResource(resourceInfo)
       expect(restifySpies.get.calledWith(`/api/${resourceInfo.name}`)).to.equal(true)

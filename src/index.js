@@ -1,5 +1,5 @@
 import SimpleRestfulServer from './SimpleRestfulServer'
-import InMemoryRepository from './repositories/InMemoryRepository'
+import InMemoryRepository from './repository/InMemoryRepository'
 
 export default {
   createServer: function(options) {

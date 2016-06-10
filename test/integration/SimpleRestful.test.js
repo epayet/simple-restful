@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import supertest from 'supertest'
 import simpleRestful from '../../src'
-import InMemoryRepository from '../../src/repositories/InMemoryRepository'
+import InMemoryRepository from '../../src/repository/InMemoryRepository'
 
 describe('SimpleRestful', function() {
   let client, server
@@ -34,8 +34,7 @@ describe('SimpleRestful', function() {
     let simpleResource = {
       name: "example",
       idField: "id",
-      // TODO do "InMemory" instead
-      repository: new InMemoryRepository()
+      repository: "InMemory"
     }
     server.addResource(simpleResource)
 
