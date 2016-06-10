@@ -7,7 +7,10 @@ describe('SimpleRestful', function() {
   let client, server
 
   beforeEach(function() {
-    let options = { port: 9999 }
+    let options = {
+      port: 9999,
+      logLevel: 'error'
+    }
     server = simpleRestful.createServer(options)
     server.start()
     client = supertest.agent(`http://localhost:${options.port}`)

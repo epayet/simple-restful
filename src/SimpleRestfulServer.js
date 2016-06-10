@@ -1,16 +1,21 @@
 import restify from 'restify'
 import { createRepository } from './repository/repositoryFactory'
+import winston from 'winston'
 
 export default class SimpleRestfulServer {
   constructor(options) {
     this.options = options
+    this.logger = new (winston.Logger)({
+      transports: [
+        new (winston.transports.Console)({ level: options.logLevel ? options.logLevel : 'info' })
+      ]
+    });
     this.createServer()
   }
 
   start() {
     this.server.listen(this.options.port, () => {
-      // TODO better logging
-      console.log(`Server started at http:localhost:${this.options.port}`)
+      this.logger.info(`Server started at http:localhost:${this.options.port}`)
     })
   }
 

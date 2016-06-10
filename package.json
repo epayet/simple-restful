@@ -16,7 +16,8 @@
     "api"
   ],
   "dependencies": {
-    "restify": "^4.0.4"
+    "restify": "^4.0.4",
+    "winston": "^2.2.0"
   },
   "engines": {
     "node": "*"
