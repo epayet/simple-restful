@@ -45,4 +45,17 @@ describe('Unit: InMemoryRepository', function() {
         })
     })
   })
+
+  describe('update', function() {
+    it('should update the data', function(done) {
+      repository.data = [{__id: 0, stuff: 'stuff'}]
+      let dataWithNewValues = {__id: 0, stuff: 'other stuff'}
+
+      repository.update(0, dataWithNewValues)
+        .then(updatedData => {
+          expect(repository.data).to.deep.equal([dataWithNewValues])
+          done()
+        })
+    })
+  })
 })

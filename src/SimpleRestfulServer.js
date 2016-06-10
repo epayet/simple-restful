@@ -37,7 +37,8 @@ export default class SimpleRestfulServer {
       repository.add(req.body).then(data => res.send(201, data))
     })
     this.server.put(`/api/${resourceInfo.name}/:id`, (req, res) => {
-      repository.update(req.body).then(data => res.send(data))
+      let id = parseInt(req.params['id'])
+      repository.update(id, req.body).then(data => res.send(data))
     })
     this.server.del(`/api/${resourceInfo.name}/:id`, (req, res) => {
       let id = parseInt(req.params['id'])

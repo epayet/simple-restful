@@ -123,6 +123,29 @@ describe('Integration: SimpleRestful', function() {
               })
           })
       })
+
+      it('should update the data', function(done) {
+        let updatedData = { __id: 0, stuff: 'other stuff' }
+
+        client
+          .put(`/api/example/${simpleDataWithId.__id}`)
+          .send(updatedData)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) throw err;
+
+            client
+              .get(`/api/example/${simpleDataWithId.__id}`)
+              .expect("Content-type", /json/)
+              .expect(200)
+              .end(function(err, res) {
+                if (err) throw err;
+
+                expect(res.body).to.deep.equal(updatedData)
+                done()
+              })
+          })
+      })
     })
   })
 })
