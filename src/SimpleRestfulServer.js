@@ -27,24 +27,25 @@ export default class SimpleRestfulServer {
     let repository = createRepository(resourceInfo.repository, resourceInfo.repositoryOptions)
 
     this.server.get(`/api/${resourceInfo.name}`, (req, res) => {
-      res.send(repository.getAll())
+      repository.getAll().then(data => res.send(data))
     })
     this.server.get(`/api/${resourceInfo.name}/:${resourceInfo.idField}`, (req, res) => {
-      res.send(repository.get(req.params[resourceInfo.idField]))
+      repository.get(req.params[resourceInfo.__id]).then(data => res.send(data))
     })
     this.server.post(`/api/${resourceInfo.name}`, (req, res) => {
-      res.send(repository.add(req.body))
+      repository.add(req.body).then(data => res.send(201, data))
     })
     this.server.put(`/api/${resourceInfo.name}/:${resourceInfo.idField}`, (req, res) => {
-      res.send(repository.update(req.body))
+      repository.update(req.body).then(data => res.send(data))
     })
     this.server.del(`/api/${resourceInfo.name}/:${resourceInfo.idField}`, (req, res) => {
-      res.send(repository.delete(req.params[resourceInfo.idField]))
+      repository.delete(req.params[resourceInfo.idField]).then(() => res.send(204))
     })
   }
 
   createServer() {
     this.server = restify.createServer()
+    this.server.use(restify.bodyParser());
     this.server.get('status', (req, res) => res.send({status: "it's aliiive"}))
   }
 }

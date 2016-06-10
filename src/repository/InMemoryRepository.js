@@ -1,6 +1,11 @@
 export default class InMemoryRepository {
+  constructor() {
+    this.data = []
+    this.idCounter = 0
+  }
+
   getAll() {
-    return []
+    return Promise.resolve(this.data)
   }
 
   get(id) {
@@ -8,7 +13,10 @@ export default class InMemoryRepository {
   }
 
   add(newData) {
-
+    newData.__id = this.idCounter
+    this.idCounter++
+    this.data.push(newData)
+    return Promise.resolve(newData)
   }
 
   update(updatedData) {

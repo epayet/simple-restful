@@ -3,7 +3,7 @@ import supertest from 'supertest'
 import simpleRestful from '../../src'
 import InMemoryRepository from '../../src/repository/InMemoryRepository'
 
-describe('SimpleRestful', function() {
+describe('Integration: SimpleRestful', function() {
   let client, server
 
   beforeEach(function() {
@@ -33,22 +33,65 @@ describe('SimpleRestful', function() {
     })
   })
 
-  it('should create a server with a simple in memory resource and get an empty collection', function(done) {
-    let simpleResource = {
-      name: "example",
-      idField: "id",
-      repository: "InMemory"
-    }
-    server.addResource(simpleResource)
+  describe('simple resource', function() {
+    let simpleData = { stuff: 'stuff' }
+    let simpleDataWithId = { __id: 0, stuff: 'stuff' }
 
-    client
-      .get('/api/example')
-      .expect("Content-type", /json/)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) throw err;
-        expect(res.body).to.deep.equal([])
-        done()
+    beforeEach(function() {
+      let simpleResource = {
+        name: "example",
+        repository: "InMemory"
+      }
+      server.addResource(simpleResource)
+    })
+
+    it('should create a server with a simple in memory resource and get an empty collection', function(done) {
+      client
+        .get('/api/example')
+        .expect("Content-type", /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) throw err;
+
+          expect(res.body).to.deep.equal([])
+          done()
+        })
+    })
+
+    it('should add a new data and get 201', function(done) {
+      client
+        .post('/api/example')
+        .send(simpleData)
+        .expect("Content-type", /json/)
+        .expect(201)
+        .end(function(err, res) {
+          if (err) throw err;
+
+          expect(res.body).to.deep.equal(simpleDataWithId)
+          done()
+        })
+    })
+
+    describe('when data is added first via post', function() {
+      beforeEach(function(cb) {
+        client
+          .post('/api/example')
+          .send(simpleData)
+          .end(cb)
       })
+
+      it('should add data and retrieve the collection', function(done) {
+        client
+          .get('/api/example')
+          .expect("Content-type", /json/)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) throw err;
+
+            expect(res.body).to.deep.equal([simpleDataWithId])
+            done()
+          })
+      })
+    })
   })
 })

@@ -3,7 +3,7 @@ import sinon from 'sinon'
 import restify from 'restify'
 import SimpleRestfulServer from '../../src/SimpleRestfulServer'
 
-describe('SimpleRestfulServer', function() {
+describe('Unit: SimpleRestfulServer', function() {
   let restifySpies = {}
   let server, options
 
@@ -20,7 +20,8 @@ describe('SimpleRestfulServer', function() {
       post: restifySpies.post,
       put: restifySpies.put,
       del: restifySpies.del,
-      close: restifySpies.close
+      close: restifySpies.close,
+      use: sinon.spy()
     })
   })
 
@@ -56,7 +57,6 @@ describe('SimpleRestfulServer', function() {
     it('should add routes to the server', function() {
       let resourceInfo = {
         name: 'test',
-        idField: 'id',
         repository: 'InMemory'
       }
       server.addResource(resourceInfo)
