@@ -24,6 +24,8 @@ export default class InMemoryRepository {
   }
 
   delete(id) {
-
+    let index = this.data.findIndex(data => data.__id === id)
+    this.data.splice(index)
+    return Promise.resolve()
   }
 }

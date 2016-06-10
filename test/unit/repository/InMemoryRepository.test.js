@@ -33,4 +33,16 @@ describe('Unit: InMemoryRepository', function() {
         })
     })
   })
+
+  describe('delete', function() {
+    it('should delete the data', function(done) {
+      repository.data = [{__id: 0, stuff: 'stuff'}]
+
+      repository.delete(0)
+        .then(() => {
+          expect(repository.data).to.deep.equal([])
+          done()
+        })
+    })
+  })
 })

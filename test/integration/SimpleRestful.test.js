@@ -105,6 +105,24 @@ describe('Integration: SimpleRestful', function() {
             done()
           })
       })
+
+      it('should delete the data', function(done) {
+        client
+          .delete(`/api/example/${simpleDataWithId.__id}`)
+          .expect(204)
+          .end(function() {
+            client
+              .get('/api/example')
+              .expect("Content-type", /json/)
+              .expect(200)
+              .end(function(err, res) {
+                if (err) throw err;
+
+                expect(res.body).to.deep.equal([])
+                done()
+              })
+          })
+      })
     })
   })
 })
