@@ -61,10 +61,10 @@ describe('Unit: SimpleRestfulServer', function() {
       }
       server.addResource(resourceInfo)
       expect(restifySpies.get.calledWith(`/api/${resourceInfo.name}`)).to.equal(true)
-      expect(restifySpies.get.calledWith(`/api/${resourceInfo.name}/:${resourceInfo.idField}`)).to.equal(true)
+      expect(restifySpies.get.calledWith(`/api/${resourceInfo.name}/:id`)).to.equal(true)
       expect(restifySpies.post.calledWith(`/api/${resourceInfo.name}`)).to.equal(true)
-      expect(restifySpies.put.calledWith(`/api/${resourceInfo.name}/:${resourceInfo.idField}`)).to.equal(true)
-      expect(restifySpies.del.calledWith(`/api/${resourceInfo.name}/:${resourceInfo.idField}`)).to.equal(true)
+      expect(restifySpies.put.calledWith(`/api/${resourceInfo.name}/:id`)).to.equal(true)
+      expect(restifySpies.del.calledWith(`/api/${resourceInfo.name}/:id`)).to.equal(true)
     })
   })
 })

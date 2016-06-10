@@ -29,17 +29,19 @@ export default class SimpleRestfulServer {
     this.server.get(`/api/${resourceInfo.name}`, (req, res) => {
       repository.getAll().then(data => res.send(data))
     })
-    this.server.get(`/api/${resourceInfo.name}/:${resourceInfo.idField}`, (req, res) => {
-      repository.get(req.params[resourceInfo.__id]).then(data => res.send(data))
+    this.server.get(`/api/${resourceInfo.name}/:id`, (req, res) => {
+      let id = parseInt(req.params['id'])
+      repository.get(id).then(data => res.send(data))
     })
     this.server.post(`/api/${resourceInfo.name}`, (req, res) => {
       repository.add(req.body).then(data => res.send(201, data))
     })
-    this.server.put(`/api/${resourceInfo.name}/:${resourceInfo.idField}`, (req, res) => {
+    this.server.put(`/api/${resourceInfo.name}/:id`, (req, res) => {
       repository.update(req.body).then(data => res.send(data))
     })
-    this.server.del(`/api/${resourceInfo.name}/:${resourceInfo.idField}`, (req, res) => {
-      repository.delete(req.params[resourceInfo.idField]).then(() => res.send(204))
+    this.server.del(`/api/${resourceInfo.name}/:id`, (req, res) => {
+      let id = parseInt(req.params['id'])
+      repository.delete(id).then(() => res.send(204))
     })
   }
 

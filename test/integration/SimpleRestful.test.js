@@ -92,6 +92,19 @@ describe('Integration: SimpleRestful', function() {
             done()
           })
       })
+
+      it('should add data and retrieve the new one created', function(done) {
+        client
+          .get(`/api/example/${simpleDataWithId.__id}`)
+          .expect("Content-type", /json/)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) throw err;
+
+            expect(res.body).to.deep.equal(simpleDataWithId)
+            done()
+          })
+      })
     })
   })
 })

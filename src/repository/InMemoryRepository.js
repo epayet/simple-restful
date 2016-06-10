@@ -9,7 +9,7 @@ export default class InMemoryRepository {
   }
 
   get(id) {
-
+    return Promise.resolve(this.data.find(data => data.__id === id))
   }
 
   add(newData) {
