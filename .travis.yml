@@ -3,4 +3,5 @@ node_js:
   - "6"
   - "6.1"
   - "5.11"
-  - "0.12"
+
+# TODO support older versions
