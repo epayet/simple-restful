@@ -1,6 +1,6 @@
 export default class InMemoryRepository {
-  constructor() {
-    this.data = []
+  constructor(options = {}) {
+    this.data = options.defaultData || []
     this.idCounter = 0
   }
 

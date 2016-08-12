@@ -8,6 +8,19 @@ describe('Unit: InMemoryRepository', function() {
     repository = new InMemoryRepository()
   })
 
+  describe('init', function() {
+    it('should have default data', function(done) {
+      let defaultData = [{__id: 1, stuff: 'stuff'}]
+      repository = new InMemoryRepository({defaultData})
+
+      repository.getAll()
+        .then(data => {
+          expect(data).to.deep.equal(defaultData)
+          done()
+        })
+    })
+  })
+
   describe('add', function() {
     it('should add data, the new data should have a new id', function(done) {
       let data = {stuff: 'stuff'}

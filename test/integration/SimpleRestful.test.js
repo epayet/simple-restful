@@ -148,4 +148,27 @@ describe('Integration: SimpleRestful', function() {
       })
     })
   })
+
+  it('should be possible to set up options for resources', function(done) {
+    let defaultResource = {__id: 1, stuff: 'stuff'}
+    let simpleResource = {
+      name: "example",
+      repository: "InMemory",
+      repositoryOptions: {
+        defaultData: [defaultResource]
+      }
+    }
+    server.addResource(simpleResource)
+
+    client
+      .get('/api/example/1')
+      .expect("Content-type", /json/)
+      .expect(200)
+      .end(function(err, res) {
+        if (err) throw err;
+
+        expect(res.body).to.deep.equal(defaultResource)
+        done()
+      })
+  })
 })
