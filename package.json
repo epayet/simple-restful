@@ -2,11 +2,14 @@
   "author": "Emmanuel Payet",
   "name": "simple-restful",
   "description": "Easily create RESTful API",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/epayet/simple-restful.git"
   },
+  "files": [
+    "lib"
+  ],
   "main": "./lib/index.js",
   "keywords": [
     "rest",
