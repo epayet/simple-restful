@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import supertest from 'supertest'
 import path from 'path'
 import rimraf from 'rimraf'
-import simpleRestful from '../../src'
+import { createServer } from '../../src'
 import fs from 'fs-promise'
 import { testRepository } from './_Repository.test'
 
@@ -16,7 +16,7 @@ describe('Integration: SimpleRestful', function() {
       port: 9999,
       logLevel: 'error'
     }
-    server = simpleRestful.createServer(options)
+    server = createServer(options)
     server.start()
     client = supertest.agent(`http://localhost:${options.port}`)
   })

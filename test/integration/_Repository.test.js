@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import supertest from 'supertest'
-import simpleRestful from '../../src'
+import { createServer } from '../../src'
 
 export function testRepository(options) {
   describe('with a simple resource:', function() {
@@ -11,7 +11,7 @@ export function testRepository(options) {
         port: 9998,
         logLevel: 'error'
       }
-      server = simpleRestful.createServer(options)
+      server = createServer(options)
       server.start()
       client = supertest.agent(`http://localhost:${options.port}`)
     })
