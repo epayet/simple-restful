@@ -1,4 +1,4 @@
-# SimpleRestful
+# Simple Restful
 
 [![Build Status](https://travis-ci.org/epayet/SimpleRestJS.svg)](https://travis-ci.org/epayet/SimpleRestJS)
 
