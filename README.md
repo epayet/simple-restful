@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/epayet/SimpleRestJS.svg?branch=v2)](https://travis-ci.org/epayet/SimpleRestJS)
 
 With this module, you can easily create a complete JSON based RESTful API with just a few lines.
-You can use existing storage strategies (MongoDB, files, InMemory for tests, etc.) or even create your own.
+You can use existing storage strategies (InMemory, File, Mongo etc.) or even create your own.
 
 ## Installation
 
@@ -84,43 +84,22 @@ var exampleResourceInfo = {
 server.addResource(exampleResourceInfo);
 ```
 
-#### MongoDBRepository (MongoDB)
+#### MongoRepository (Mongo)
 
 TODO
-
-With this strategy, the data are stored in a MongoDB database. See the 
-[example](https://github.com/epayet/SimpleRestJS/blob/master/examples/mongoDB.js). 
-
-Example:
-
-```javascript
-var simpleResourceInfo = {
-    name: "example",
-    repository: "MongoDB",
-    repositoryOptions: {
-        mongoOptions: {
-            serverUrl: "127.0.0.1:27017",
-            database: "testSimpleRestful"
-        }
-    }
-};
-```
 
 #### Custom repository
- 
-TODO
 
-You can create you own repository as well by overwriting basic methods. Here is an 
-[example](https://github.com/epayet/SimpleRestJS/blob/master/examples/customRepository.js)
-
+You can create you own repository if you respect the method names and register it to the server.
 Here are the methods you need to override:
 
-* getAll
-* get
-* add
-* update
-* remove
-* parentDeleted
+* getAll()
+* get(id)
+* add(newData)
+* update(id, newData)
+* delete(id)
+
+Example: https://github.com/epayet/SimpleRestJS/blob/master/examples/customRepository.js
 
 Don't hesitate to submit a pull request to add yours to the official ones!
 

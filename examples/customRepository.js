@@ -1,31 +1,41 @@
 var simpleRestful = require('simple-restful');
 
-var server = simpleRestful.createServer({port:8081, debug:true});
-var BaseRepository = simpleRestful.BaseRepository;
+class ConsoleRepository {
+  constructor(options) {}
 
-//Goal of this repository: log the resource asked by GET /repository/someResource
-//new repository constructor
-//simple dataInfo : {idField: "name", name: "example"}
-var ConsoleLogRepository = function(dataInfo, options) {
-    //call the parent constructor
-    BaseRepository.call(this, dataInfo, options);
-};
+  getAll() {
+    console.log('getAll method called')
+  }
 
-//get the base methods
-ConsoleLogRepository.prototype = Object.create(BaseRepository.prototype);
-//override the get method, and log the resource asked
-ConsoleLogRepository.prototype.get = function(resourceId, callback) {
-    console.log("resource asked: " + resourceId);
-    callback();
-};
-//register the ConsoleLogRepository
-server.registerRepository("ConsoleLog", ConsoleLogRepository);
+  get(id) {
+    console.log(`get(${id} called`)
+  }
 
-//and finally create a resource that use this repository class
+  add(newData) {
+    console.log('add called')
+  }
+
+  update(id, newData) {
+    console.log(`update(${id} called`)
+  }
+
+  delete(id) {
+    console.log(`delete(${id} called`)
+  }
+}
+
+var server = simpleRestful.createServer({port:8081});
+
+// Register the custom repository
+server.addRepository("Console", ConsoleRepository);
+
+// And finally create a resource that use this repository class
 var testRepositoryInfo = {
-    name: "repository",
-    idField: "name",
-    repository: "ConsoleLog"
+    name: "example",
+    repository: "Console",     // Use it like this
+    repositoryOptions: {}      // constructor options
 };
 server.addResource(testRepositoryInfo);
 server.run();
+
+// Each time you use this resource, it will only log stuff and not store anything, according to this repository

@@ -1,6 +1,7 @@
 import restify from 'restify'
-import { createRepository } from './repository/repositoryFactory'
 import winston from 'winston'
+import InMemoryRepository from './repository/InMemoryRepository'
+import FileRepository from './repository/FileRepository'
 
 export default class SimpleRestfulServer {
   constructor(options) {
@@ -11,6 +12,10 @@ export default class SimpleRestfulServer {
       ]
     });
     this.createServer()
+    this.repositoryClasses = {
+      'InMemory': InMemoryRepository,
+      'File': FileRepository
+    }
   }
 
   start() {
@@ -24,7 +29,7 @@ export default class SimpleRestfulServer {
   }
 
   addResource(resourceInfo) {
-    let repository = createRepository(resourceInfo.repository, resourceInfo.repositoryOptions)
+    let repository = new this.repositoryClasses[resourceInfo.repository](resourceInfo.repositoryOptions)
 
     this.server.get(`/api/${resourceInfo.name}`, (req, res) => {
       repository.getAll().then(data => res.send(data))
@@ -44,6 +49,10 @@ export default class SimpleRestfulServer {
       let id = parseInt(req.params['id'])
       repository.delete(id).then(() => res.send(204))
     })
+  }
+
+  addRepository(repositoryName, repositoryClass) {
+    this.repositoryClasses[repositoryName] = repositoryClass
   }
 
   createServer() {

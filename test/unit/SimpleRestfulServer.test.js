@@ -67,4 +67,14 @@ describe('Unit: SimpleRestfulServer', function() {
       expect(restifySpies.del.calledWith(`/api/${resourceInfo.name}/:id`)).to.equal(true)
     })
   })
+
+  describe('addRepository', function() {
+    it('should add a custom repository to the repositories available', function() {
+      class CustomRepository {}
+
+      server.addRepository('Custom', CustomRepository)
+
+      expect(server.repositoryClasses['Custom']).to.equal(CustomRepository)
+    })
+  })
 })
