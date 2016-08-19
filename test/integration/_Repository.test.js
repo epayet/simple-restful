@@ -32,10 +32,9 @@ export function testRepository(options) {
       client
         .get('/api/example')
         .expect("Content-type", /json/)
-        //.expect(200)
+        .expect(200)
         .end(function(err, res) {
           if (err) throw err;
-          console.log(res.body)
 
           expect(res.body).to.deep.equal([])
           done()
@@ -54,6 +53,13 @@ export function testRepository(options) {
           expect(res.body).to.deep.equal(simpleDataWithId)
           done()
         })
+    })
+
+    it('should get a 404 when the data does not exist', function(done) {
+      client
+        .get('/api/example/inexisting')
+        .expect(404)
+        .end(done)
     })
 
     describe('when data is added first via post', function() {

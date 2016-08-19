@@ -32,22 +32,32 @@ export default class SimpleRestfulServer {
     let repository = new this.repositoryClasses[resourceInfo.repository](resourceInfo.repositoryOptions)
 
     this.server.get(`/api/${resourceInfo.name}`, (req, res) => {
-      repository.getAll().then(data => res.send(data))
+      repository.getAll()
+        .then(data => res.send(data))
+        .catch(error => res.send(500, error))
     })
     this.server.get(`/api/${resourceInfo.name}/:id`, (req, res) => {
       let id = parseInt(req.params['id'])
-      repository.get(id).then(data => res.send(data))
+      repository.get(id)
+        .then(data => res.send(data))
+        .catch(error => res.send(404, error))
     })
     this.server.post(`/api/${resourceInfo.name}`, (req, res) => {
-      repository.add(req.body).then(data => res.send(201, data))
+      repository.add(req.body)
+        .then(data => res.send(201, data))
+        .catch(error => res.send(500, error))
     })
     this.server.put(`/api/${resourceInfo.name}/:id`, (req, res) => {
       let id = parseInt(req.params['id'])
-      repository.update(id, req.body).then(data => res.send(data))
+      repository.update(id, req.body)
+        .then(data => res.send(data))
+        .catch(error => res.send(500, error))
     })
     this.server.del(`/api/${resourceInfo.name}/:id`, (req, res) => {
       let id = parseInt(req.params['id'])
-      repository.delete(id).then(() => res.send(204))
+      repository.delete(id)
+        .then(() => res.send(204))
+        .catch(error => res.send(500, error))
     })
   }
 

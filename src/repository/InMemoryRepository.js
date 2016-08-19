@@ -9,7 +9,11 @@ export default class InMemoryRepository {
   }
 
   get(id) {
-    return Promise.resolve(this.find(id))
+    let data = this.find(id)
+    if(data)
+      return Promise.resolve(data)
+    else
+      return Promise.reject(new Error(`Data with id ${id} not found`))
   }
 
   add(newData) {

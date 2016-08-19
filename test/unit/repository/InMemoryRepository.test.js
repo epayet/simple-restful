@@ -45,6 +45,14 @@ describe('Unit: InMemoryRepository', function() {
           done()
         })
     })
+
+    it('should throw an error when the data does not exist', function(done) {
+      repository.get(1234)
+        .catch(e => {
+          expect(e).to.be.defined
+          done()
+        })
+    })
   })
 
   describe('getAll', function() {
