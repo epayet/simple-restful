@@ -41,23 +41,48 @@ Here the routes created:
 
 ### Repositories
 
-A repository is like a box containing and handling the resources. Here are the defaults one, but you can create your own.
+A repository is like a box containing and handling date. Here are the defaults one, but you can create your own.
+When you add a resource to the server, you can specify options specific to the type of repository via `repositoryOptions`:
 
 #### InMemoryRepository (InMemory)
 
-With this strategy, the data are stored in memory and vanish when the server stops. Options:
+The data are stored in memory and vanish when the server stops. Options:
 
-TODO
+* `defaultData`: array of data to start with (default: [])
 
-* defaultData: array of data to start with (default: [])
+```javascript
+// Example
+var exampleResourceInfo = {
+    name: "example",
+    repository: "InMemory",
+    repositoryOptions: {            
+        defaultData: [{__id: 0}]
+    }       
+};
+
+server.addResource(exampleResourceInfo);
+```
 
 #### FileRepository (File)
 
-TODO
+With this strategy, the data are stored in json files in the directory of your choice Options:
 
-With this strategy, the data are stored in json files. The default folder is data. Options:
+* `folderPath`: the absolute folder path for the data (mandatory)
 
-* folderPath: the folder path for the data
+```javascript
+// Example
+var path = require('path');
+
+var exampleResourceInfo = {
+    name: "example",
+    repository: "File",
+    repositoryOptions: {            
+        folderPath: path.join(__dirname, 'data')
+    }       
+};
+
+server.addResource(exampleResourceInfo);
+```
 
 #### MongoDBRepository (MongoDB)
 
@@ -88,7 +113,7 @@ TODO
 You can create you own repository as well by overwriting basic methods. Here is an 
 [example](https://github.com/epayet/SimpleRestJS/blob/master/examples/customRepository.js)
 
-Here are the methods you can override:
+Here are the methods you need to override:
 
 * getAll
 * get
@@ -96,6 +121,8 @@ Here are the methods you can override:
 * update
 * remove
 * parentDeleted
+
+Don't hesitate to submit a pull request to add yours to the official ones!
 
 ## Options
 
@@ -106,3 +133,8 @@ var server = new simpleRestful.createServer({
     logLevel: 'error' // Can be error, warn, info, verbose, debug, silly
 });
 ```
+
+## TODO
+
+* 404 on GET id
+* License

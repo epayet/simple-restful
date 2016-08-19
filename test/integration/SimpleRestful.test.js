@@ -5,6 +5,7 @@ import rimraf from 'rimraf'
 import simpleRestful from '../../src'
 import InMemoryRepository from '../../src/repository/InMemoryRepository'
 import fs from 'fs-promise'
+import { testRepository } from './_Repository.test'
 
 describe('Integration: SimpleRestful', function() {
   let client, server
@@ -39,118 +40,12 @@ describe('Integration: SimpleRestful', function() {
   })
 
   describe('InMemory: ', function() {
-    describe('with a simple resource: ', function() {
-      beforeEach(function() {
-        let simpleResource = {
-          name: "example",
-          repository: "InMemory"
-        }
-        server.addResource(simpleResource)
-      })
+    let simpleResource = {
+      name: "example",
+      repository: "InMemory"
+    }
 
-      it('should create a server with a simple in memory resource and get an empty collection', function(done) {
-        client
-          .get('/api/example')
-          .expect("Content-type", /json/)
-          .expect(200)
-          .end(function(err, res) {
-            if (err) throw err;
-
-            expect(res.body).to.deep.equal([])
-            done()
-          })
-      })
-
-      it('should add a new data and get 201', function(done) {
-        client
-          .post('/api/example')
-          .send(simpleData)
-          .expect("Content-type", /json/)
-          .expect(201)
-          .end(function(err, res) {
-            if (err) throw err;
-
-            expect(res.body).to.deep.equal(simpleDataWithId)
-            done()
-          })
-      })
-
-      describe('when data is added first via post', function() {
-        beforeEach(function(cb) {
-          client
-            .post('/api/example')
-            .send(simpleData)
-            .end(cb)
-        })
-
-        it('should add data and retrieve the collection', function(done) {
-          client
-            .get('/api/example')
-            .expect("Content-type", /json/)
-            .expect(200)
-            .end(function(err, res) {
-              if (err) throw err;
-
-              expect(res.body).to.deep.equal([simpleDataWithId])
-              done()
-            })
-        })
-
-        it('should add data and retrieve the new one created', function(done) {
-          client
-            .get(`/api/example/${simpleDataWithId.__id}`)
-            .expect("Content-type", /json/)
-            .expect(200)
-            .end(function(err, res) {
-              if (err) throw err;
-
-              expect(res.body).to.deep.equal(simpleDataWithId)
-              done()
-            })
-        })
-
-        it('should delete the data', function(done) {
-          client
-            .delete(`/api/example/${simpleDataWithId.__id}`)
-            .expect(204)
-            .end(function() {
-              client
-                .get('/api/example')
-                .expect("Content-type", /json/)
-                .expect(200)
-                .end(function(err, res) {
-                  if (err) throw err;
-
-                  expect(res.body).to.deep.equal([])
-                  done()
-                })
-            })
-        })
-
-        it('should update the data', function(done) {
-          let updatedData = { __id: 0, stuff: 'other stuff' }
-
-          client
-            .put(`/api/example/${simpleDataWithId.__id}`)
-            .send(updatedData)
-            .expect(200)
-            .end(function(err, res) {
-              if (err) throw err;
-
-              client
-                .get(`/api/example/${simpleDataWithId.__id}`)
-                .expect("Content-type", /json/)
-                .expect(200)
-                .end(function(err, res) {
-                  if (err) throw err;
-
-                  expect(res.body).to.deep.equal(updatedData)
-                  done()
-                })
-            })
-        })
-      })
-    })
+    testRepository({simpleResource})
 
     it('should be possible to set up options for resources', function(done) {
       let defaultResource = {__id: 1, stuff: 'stuff'}
@@ -178,20 +73,15 @@ describe('Integration: SimpleRestful', function() {
 
   describe('File', function() {
     let testDataFolderPath = path.join(__dirname, 'testData')
-
-    before(function(cb) {
-      fs.mkdir(testDataFolderPath).then(cb).catch(cb);
-    })
+    let resourceInfo = {
+      name: 'example',
+      repository: 'File',
+      repositoryOptions: {
+        folderPath: testDataFolderPath
+      }
+    }
 
     it('should create a file in the correct folder', function(done) {
-
-      let resourceInfo = {
-        name: 'example',
-        repository: 'File',
-        repositoryOptions: {
-          folderPath: testDataFolderPath
-        }
-      }
       server.addResource(resourceInfo)
 
       client
@@ -212,7 +102,9 @@ describe('Integration: SimpleRestful', function() {
         })
     })
 
-    after(function() {
+    testRepository({simpleResource: resourceInfo})
+
+    afterEach(function() {
       rimraf(testDataFolderPath, {}, function(){})
     })
   })

@@ -47,6 +47,26 @@ describe('Unit: InMemoryRepository', function() {
     })
   })
 
+  describe('getAll', function() {
+    it('should get an empty array', function(done) {
+      repository.getAll()
+        .then(allData => {
+          expect(allData).to.deep.equal([])
+          done()
+        })
+    })
+
+    it('should the existing data as a collection', function(done) {
+      repository.data = [{stuff: 'stuff'}]
+
+      repository.getAll()
+        .then(allData => {
+          expect(allData).to.deep.equal(repository.data)
+          done()
+        })
+    })
+  })
+
   describe('delete', function() {
     it('should delete the data', function(done) {
       repository.data = [{__id: 0, stuff: 'stuff'}]
