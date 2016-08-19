@@ -3,7 +3,6 @@ import supertest from 'supertest'
 import path from 'path'
 import rimraf from 'rimraf'
 import simpleRestful from '../../src'
-import InMemoryRepository from '../../src/repository/InMemoryRepository'
 import fs from 'fs-promise'
 import { testRepository } from './_Repository.test'
 

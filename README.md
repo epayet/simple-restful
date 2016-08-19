@@ -15,7 +15,7 @@ Here the few lines to create you first resource:
 
 ```javascript
 var simpleRestful = require('simple-restful');
-var server = new simpleRestful.createServer({port: 8080});
+var server = simpleRestful.createServer({port: 8080});
 
 // The minimum information to define the resource
 var simpleResourceInfo = {
