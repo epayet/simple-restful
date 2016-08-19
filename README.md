@@ -1,6 +1,6 @@
 # Simple Restful
 
-[![Build Status](https://travis-ci.org/epayet/SimpleRestJS.svg)](https://travis-ci.org/epayet/SimpleRestJS)
+[![Build Status](https://travis-ci.org/epayet/SimpleRestJS.svg)](https://travis-ci.org/epayet/simple-restful)
 
 With this module, you can easily create a complete JSON based RESTful API with just a few lines.
 You can use existing storage strategies (InMemory, File, Mongo etc.) or even create your own.
